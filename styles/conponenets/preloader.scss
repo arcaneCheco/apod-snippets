@@ -1,0 +1,15 @@
+.preloader {
+  @extend %center;
+  @extend %cover;
+
+  background: #151515;
+  color: white;
+
+  z-index: z("preloader");
+
+  overflow: hidden;
+}
+
+.preloader__wrapper {
+  font-size: 18rem;
+}

@@ -1,0 +1,13 @@
+.explore 
+  .explore__wrapper 
+    .explore__gallery 
+      each media in explore.data.gallery 
+        a.explore__gallery__link(href=`/detail/${media.pod.uid}`)
+          figure.explore__gallery__media 
+            img.explore__gallery__media__image(alt=media.image.alt data-src=media.image.url)
+
+    .explore__titles 
+      each item in explore.data.gallery 
+        .explore__titles__item=`| ${item.pod.data.title} |`
+      
+      //- video.test(src=explore.data.tg.url) 

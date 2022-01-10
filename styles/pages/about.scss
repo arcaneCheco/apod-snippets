@@ -1,0 +1,29 @@
+.about {
+  @extend %page;
+
+  overflow: hidden;
+
+  &--active {
+    @extend %page--active;
+  }
+}
+
+.about__wrapper {
+}
+
+.about__section {
+  margin: 2rem;
+}
+
+.about__section__title {
+  font-size: 5rem;
+}
+
+.about__section__text {
+  font-size: 2rem;
+}
+
+.about__link {
+  font-size: 2rem;
+  margin: 2rem;
+}

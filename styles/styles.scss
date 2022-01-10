@@ -1,0 +1,17 @@
+@import "./base/reset";
+
+@import "./utils/variables";
+@import "./utils/functions";
+@import "./utils/mixins.scss";
+
+@import "./shared/common";
+@import "./shared/pages";
+
+@import "./base/base";
+
+@import "./conponenets/preloader";
+
+@import "./pages/home";
+@import "./pages/about";
+@import "./pages/explore";
+@import "./pages/detail";

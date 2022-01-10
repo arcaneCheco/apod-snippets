@@ -1,0 +1,30 @@
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+html {
+  @extend %cover;
+
+  // background: $color-white;
+  background: #111111;
+  font-size: calc(100vw / 1920 * 10);
+  line-height: 1;
+  position: fixed;
+  overflow: hidden;
+}
+
+canvas {
+  pointer-events: none;
+  z-index: z("canvas");
+}
+
+#canvas {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+}

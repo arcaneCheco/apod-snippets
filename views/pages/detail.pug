@@ -1,0 +1,15 @@
+.detail(id=pod.uid)
+  .detail__wrapper 
+    .detail__title=pod.data.title 
+
+    //- figure.detail__cover 
+    //-   img.detail__cover__image(alt pod.data.image.alt src=pod.data.image.url data-src=pod.data.image.url)
+
+    .detail__explanation
+      each item in pod.data.images 
+        .detail__explanation__slice
+          figure.detail__explanation__media 
+            img.detail__explanation__media__image(src=item.images_image.url data-src=src=item.images_image.url, alt=item.images_image.alt)
+          p.detail__explanation__text=item.explanation1
+    
+    a.detail__close(href="/explore")="Close"
