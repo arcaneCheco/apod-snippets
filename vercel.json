@@ -2,11 +2,12 @@
     "version": 2,
     "builds": [
         {
-            "src": "./package.json",
-            "use": "@vercel/node",
-            "config": {
-                "serverFiles": ["api/**"]
-              }
+            "src": "./index.ts",
+            "use": "@vercel/node"
+        },
+        {
+          "src": "./public",
+          "use": "@vercel/node"
         }
     ],
     "routes": [
