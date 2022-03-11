@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "npx parcel build ./app/app.ts ./styles/styles.scss && cp -r ./node_modules/three/examples/js/libs/basis ./dist"
+    "build": "npx parcel build ./app/app.ts ./styles/styles.scss && cp -r ./node_modules/three/examples/js/libs/basis ./dist",
+    "start": "npx nodemon index.ts"
   },
   "author": "",
   "license": "ISC",
