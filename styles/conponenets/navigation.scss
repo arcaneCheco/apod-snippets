@@ -1,0 +1,95 @@
+.navigation {
+  @extend %cover;
+  z-index: z("navigation");
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+.navigation__wrapper {
+  @extend %cover;
+}
+
+.navigation__overlay {
+  pointer-events: all;
+  width: 0;
+  height: 80%;
+  position: absolute;
+  right: 0;
+  top: 10%;
+}
+
+.navigation__icon {
+  visibility: visible;
+  position: absolute;
+  top: 10vh;
+  // right: 3vh;
+  right: 0;
+  height: 5rem;
+  padding: 1rem;
+  z-index: 1;
+  cursor: pointer;
+  pointer-events: all;
+
+  & > svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.navigation__list__wrapper {
+  @extend %cover;
+}
+
+.navigation__list {
+  position: absolute;
+  visibility: hidden;
+  left: 30%;
+  // @include media("<phone") {
+  //   left: 0;
+  // }
+  top: 50%;
+  transform: translateY(-50%);
+  // @extend %center;
+  // flex-direction: column;
+}
+
+.navigation__list__item {
+  a {
+    pointer-events: all;
+    color: rgb(158, 158, 158);
+    line-height: 7rem;
+    font-size: 5rem;
+    @include media("<phone") {
+      font-size: 3rem;
+    }
+    text-decoration: none;
+    transition: text-shadow 0.2s ease-out, color 0.2s ease-out;
+
+    &:before {
+      content: "\262F";
+      font-size: 3rem;
+      vertical-align: middle;
+
+      @include media("<phone") {
+        font-size: 2rem;
+      }
+
+      display: inline-block;
+      width: fit-content;
+
+      padding: 0 2rem;
+      margin-left: -5rem;
+      transition: transform 0.2s ease-out;
+    }
+    &:hover:before {
+      transform: rotateZ(180deg);
+    }
+
+    &:hover {
+      color: white;
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073;
+    }
+  }
+}

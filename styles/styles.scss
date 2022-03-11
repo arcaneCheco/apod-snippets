@@ -3,6 +3,7 @@
 @import "./utils/variables";
 @import "./utils/functions";
 @import "./utils/mixins.scss";
+@import "./utils/responsive.scss";
 
 @import "./shared/common";
 @import "./shared/pages";
@@ -10,6 +11,9 @@
 @import "./base/base";
 
 @import "./conponenets/preloader";
+@import "./conponenets/icon";
+@import "./conponenets/footer";
+@import "./conponenets/navigation";
 
 @import "./pages/home";
 @import "./pages/about";

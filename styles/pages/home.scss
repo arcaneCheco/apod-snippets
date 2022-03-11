@@ -11,35 +11,22 @@
 }
 
 .home__wrapper {
-  -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
-  -webkit-text-stroke-width: 0.2rem;
-  -webkit-text-stroke-color: rgb(255, 255, 255);
+  @extend %cover;
+  @extend %center;
 }
 
-.home__title {
-  font-size: 20rem;
-  margin: 5rem auto;
-  // -webkit-text-fill-color: transparent; /* Will override color (regardless of order) */
-  // -webkit-text-stroke-width: 0.2rem;
-  // -webkit-text-stroke-color: rgb(255, 255, 255);
-  // @include textGlitch(20, 4px);
-  // @include noiseZoom()
+.home__particles {
+  width: 30vw;
+  min-width: 25rem;
+
+  @include media("<phone") {
+    width: 55vw;
+    min-width: 0;
+  }
+
+  visibility: hidden;
 }
 
-.home__nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10rem;
-  -webkit-text-stroke-color: rgb(255, 255, 255);
-}
-
-.home__nav__item {
-  text-decoration: none;
-  color: inherit;
-}
-
-.home__nav__item__text {
-  -webkit-text-stroke-color: rgb(255, 255, 255);
-  font-size: 8rem;
+.home__logo {
+  width: 100%;
 }

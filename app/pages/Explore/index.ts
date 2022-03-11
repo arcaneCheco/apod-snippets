@@ -10,6 +10,7 @@ export default class Explore extends Page {
       elements: {
         wrapper: ".explore__wrapper",
       },
+      isScrollable: false,
     });
   }
 

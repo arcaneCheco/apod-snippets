@@ -1,113 +1,153 @@
-import * as THREE from "three";
-import { urlToHttpOptions } from "url";
-import img from "./vortex3.jpg";
-// import img from "./vortex4.png";
+import EventEmitter from "events";
+import Detection from "../../classes/Detection";
+import {
+  Texture,
+  Scene,
+  PerspectiveCamera,
+  WebGLRenderer,
+  Group,
+  Vector2,
+  WebGLRenderTarget,
+  LinearFilter,
+  RGBAFormat,
+  Mesh,
+  PlaneGeometry,
+  MeshBasicMaterial,
+  AdditiveBlending,
+} from "three";
 
-export default class Trail {
-  width: any;
-  height: any;
-  texture: any;
-  geometry: any;
-  textureLoader: any;
-  material: any;
-  num: any;
-  meshes: any;
-  group;
-  previous;
-  position;
-  currentWave;
-  mesh: any;
-  scene;
-  target: any;
-  trail: any;
-  renderer: THREE.WebGLRenderer;
-  camera: any;
-  constructor({ width, height, scene, camera, renderer }: any) {
+export default class Trail extends EventEmitter {
+  width: number;
+  height: number;
+  texture: Texture;
+  scene = new Scene();
+  baseScale: number;
+  camera: PerspectiveCamera;
+  renderer: WebGLRenderer;
+  group = new Group();
+  previous = new Vector2();
+  position = new Vector2();
+  currentTouch = 0;
+  map = window.TEXTURES.vortex;
+  target: THREE.WebGLRenderTarget;
+  numTouch = 8;
+  trail: Mesh<PlaneGeometry, MeshBasicMaterial>[] = [];
+  stop = true;
+  pause = false;
+  constructor({
+    width,
+    height,
+    ratio,
+    camera,
+    renderer,
+  }: {
+    width: number;
+    height: number;
+    ratio: number;
+    camera: PerspectiveCamera;
+    renderer: WebGLRenderer;
+  }) {
+    super();
     this.width = width;
     this.height = height;
-    this.scene = new THREE.Scene();
+    this.scene.position.y = 0.5 * (1 - ratio) * this.height;
+    this.baseScale = Math.max(this.height * 0.4, this.width * 0.2);
     this.camera = camera;
     this.renderer = renderer;
-    this.textureLoader = new THREE.TextureLoader();
-    this.group = new THREE.Group();
-    this.previous = new THREE.Vector2();
-    this.position = new THREE.Vector2();
-    this.currentWave = 0;
 
-    this.setTexture();
-    this.setMesh();
+    this.setRenderTarget();
+    this.setTrail();
   }
 
-  setTexture() {
-    this.target = new THREE.WebGLRenderTarget(this.width, this.height, {
-      minFilter: THREE.LinearFilter,
-      magFilter: THREE.LinearFilter,
-      format: THREE.RGBAFormat,
+  setRenderTarget() {
+    this.target = new WebGLRenderTarget(this.width, this.height, {
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+      format: RGBAFormat,
+      generateMipmaps: false,
     });
     this.texture = this.target.texture;
   }
 
-  setMesh() {
-    this.num = 10;
-    this.meshes = [];
-    const geom = new THREE.PlaneGeometry(130, 130);
-    const map = this.textureLoader.load(img);
-    this.material = new THREE.MeshBasicMaterial({
-      map: map,
+  setTrail() {
+    const geometry = new PlaneGeometry(1, 1);
+    const material = new MeshBasicMaterial({
+      map: this.map,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      blending: AdditiveBlending,
     });
-    for (let i = 0; i < this.num; i++) {
-      const mesh = new THREE.Mesh(geom, this.material.clone());
+    for (let i = 0; i < this.numTouch; i++) {
+      const mesh = new Mesh(geometry, i === 0 ? material : material.clone());
       mesh.visible = false;
       mesh.rotation.z = 2 * Math.PI * Math.random();
-      // mesh.position.x += 100 * i;
+
+      mesh.scale.x = mesh.scale.y = this.baseScale;
+
       this.scene.add(mesh);
-      this.meshes.push(mesh);
+      this.trail.push(mesh);
     }
   }
 
-  setNewWave(x: any, y: any, index: any) {
-    let mesh = this.meshes[index];
+  addTouch(x: any, y: any, index: any) {
+    let mesh = this.trail[index];
     mesh.visible = true;
     mesh.position.x = x;
     mesh.position.y = y;
     mesh.material.opacity = 1;
-    mesh.scale.x = 1;
-    mesh.scale.y = 1;
+    mesh.scale.x = mesh.scale.y = this.baseScale;
   }
 
-  trackMousePos() {
-    if (this.position.distanceTo(this.previous) < 4) {
-    } else {
-      this.setNewWave(this.position.x, this.position.y, this.currentWave);
-      this.currentWave = (this.currentWave + 1) % this.num;
+  updateTouch() {
+    if (this.position.distanceTo(this.previous) > 6) {
+      this.emit("update trail");
+      this.addTouch(this.position.x, this.position.y, this.currentTouch);
+      this.currentTouch = (this.currentTouch + 1) % this.numTouch;
     }
     this.previous.set(this.position.x, this.position.y);
   }
 
-  onTouchMove(values: any) {
-    this.position.x = values.x.end - this.width / 2;
-    this.position.y = -values.y.end + this.height / 2;
+  onTouchMove({ x, y }: { x: number; y: number }) {
+    this.position.x = x - this.width / 2;
+    this.position.y = -y + this.height / 2;
   }
 
-  update(time: any) {
-    this.renderer.setRenderTarget(this.target);
-    this.renderer.render(this.scene, this.camera);
-    this.renderer.setRenderTarget(null);
-    this.renderer.clear();
-
-    if (this.meshes.length) {
-      this.meshes.forEach((mesh: any) => {
-        if (mesh.visible) {
-          mesh.rotation.z += 0.04;
-          mesh.material.opacity *= 0.97;
-          mesh.scale.x = mesh.scale.x * 0.96 + 0.09;
-          mesh.scale.y = mesh.scale.x;
-          if (mesh.material.opacity < 0.02) mesh.visible = false;
-        }
-      });
+  onChange(template: string) {
+    if (Detection.isDesktop()) return;
+    if (template !== "/") {
+      this.pause = true;
+    } else {
+      this.pause = false;
     }
-    this.trackMousePos();
+  }
+
+  onResize({ width, height, ratio }: any) {
+    this.width = width;
+    this.height = height;
+    this.target.setSize(this.width, this.height);
+    this.scene.position.y = 0.5 * (1 - ratio) * this.height;
+    this.baseScale = Math.max(this.height * 0.4, this.width * 0.2);
+  }
+
+  update() {
+    if (this.pause) return;
+    if (!this.stop) {
+      this.renderer.setRenderTarget(this.target);
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.setRenderTarget(null);
+      this.renderer.clear();
+    }
+
+    this.stop = true;
+    this.trail.forEach((mesh) => {
+      if (mesh.visible) {
+        this.stop = false;
+        mesh.rotation.z += 0.03;
+        mesh.material.opacity *= 0.99;
+        mesh.scale.x = mesh.scale.x * 0.992;
+        mesh.scale.y = mesh.scale.x;
+        if (mesh.material.opacity < 0.05) mesh.visible = false;
+      }
+    });
+    this.updateTouch();
   }
 }

@@ -1,83 +1,65 @@
-import * as THREE from "three";
-import { lerp, clamp } from "three/src/math/MathUtils";
+import { Group, PlaneGeometry, Scene, CompressedTexture } from "three";
+import { clamp } from "three/src/math/MathUtils";
 import Media from "./Media";
-// import img from "./displacement.png";
-import img from "./displ.png";
+import GSAP from "gsap";
+import EventEmitter from "events";
 
-interface Props {
-  scene: THREE.Scene;
+export default class Explore extends EventEmitter {
+  scene: Scene;
   width: number;
   height: number;
-}
-
-export default class Explore {
-  scene;
-  width;
-  height;
-  group;
-  galleryElement;
-  geometry: THREE.PlaneGeometry;
-  mediaElements;
+  group = new Group();
+  index = 4;
+  galleryElement = document.querySelector(".explore__gallery")!;
+  gap = document.querySelector(".explore__gap")!;
+  mediaSize = 0;
+  gapSize = 0;
+  unitSize = 0;
+  zMagnitude = 0;
+  mediaLinks: NodeListOf<HTMLElement>;
+  galleryWidth = 0;
+  mediaElements = document.querySelectorAll(".explore__gallery__media");
+  scroll = {
+    ease: 0.07,
+    current: 0,
+    target: 0,
+    start: 0,
+    previous: 0,
+  };
+  touchStart: number;
+  geometry = new PlaneGeometry(1, 1, 50, 50);
   medias: Media[];
-  scroll;
-  mediaLinks;
-  mediaBounds;
-  galleryWidth;
-  index;
-  titles: HTMLElement;
-  time;
-  titleItems;
-  previous;
-  isAdjusting: any;
-  direction: any;
-  constructor({ scene, width, height }: Props) {
+  time = 0;
+  direction = 1;
+  isTransitioning = false;
+  speed: number;
+  detailIndex = 2;
+  activePodIndex = 0;
+  podTexture: CompressedTexture;
+  numMedias: number;
+  constructor({
+    scene,
+    width,
+    height,
+  }: {
+    scene: Scene;
+    width: number;
+    height: number;
+  }) {
+    super();
     this.scene = scene;
     this.width = width;
     this.height = height;
-    this.group = new THREE.Group();
-
-    this.index = 4;
-
-    this.galleryElement = document.querySelector(".explore__gallery")!;
-
-    this.mediaBounds = {
-      width: 0,
-      height: 0,
-      gap: 0,
-      unitSize: 0,
-    };
 
     this.mediaLinks = this.galleryElement.querySelectorAll(
       ".explore__gallery__link"
-    ) as NodeListOf<HTMLElement>;
+    );
 
-    this.galleryWidth = 0;
+    this.numMedias = this.mediaLinks.length;
 
-    this.mediaElements = document.querySelectorAll(".explore__gallery__media");
-
-    this.scroll = {
-      ease: 0.07,
-      current: 0,
-      target: 0,
-      start: 0,
-    };
-
-    this.titles = document.querySelector(".explore__titles")!;
-    this.titleItems = document.querySelectorAll(".explore__titles__item");
-    this.time = 0;
-    this.previous = 0;
-    this.isAdjusting = false;
-    this.direction = 1;
-    // this.time = -this.titles.clientWidth / 2; //to be removed
-
-    this.setGeometry();
     this.setGallery();
 
     this.onResize({ width: this.width, height: this.height });
-  }
-
-  setGeometry() {
-    this.geometry = new THREE.PlaneGeometry(1, 1, 60, 60);
   }
 
   setGallery() {
@@ -85,96 +67,205 @@ export default class Explore {
       const media = new Media({
         element,
         geometry: this.geometry,
-        index,
+        position: index,
         scene: this.group,
-        mediaBounds: this.mediaBounds,
-        displacementMap: img,
       });
       return media;
     });
   }
 
-  show() {
+  fromHomeTransition() {
     this.scene.add(this.group);
+    this.medias.forEach((media, index) => {
+      media.material.uniforms.uOpacity.value = 1;
+      media.material.uniforms.uTransition.value = 1;
+      GSAP.fromTo(
+        media.material.uniforms.uScale,
+        {
+          value: 0,
+        },
+        {
+          value: 1,
+          delay: index * 0.075,
+          duration: 1.5,
+        }
+      );
+    });
+    this.group.scale.set(0.5, 0.8, 1);
+    GSAP.to(this.group.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 1.5,
+    });
   }
 
-  hide() {
-    this.scene.remove(this.group);
+  fromDetailTransition() {
+    this.isTransitioning = true;
+    this.medias.forEach((media) => {
+      media.material.uniforms.uOpacity.value = 0;
+    });
+    this.onResize({ width: this.width, height: this.height });
+    this.scene.add(this.group);
+    const duration = 1;
+    this.medias.forEach((media, index) => {
+      if (index !== this.index) {
+        GSAP.to(media.material.uniforms.uOpacity, {
+          value: 1,
+          duration,
+          onComplete: () => {
+            this.medias[this.index].material.uniforms.uOpacity.value = 1;
+          },
+        });
+      }
+    });
+    GSAP.to(this.medias[this.index].material.uniforms.uTransition, {
+      value: 1,
+      duration: 3,
+      delay: duration,
+    });
+    GSAP.delayedCall(duration, () => {
+      this.isTransitioning = false;
+    });
   }
 
-  adjustPosition() {
-    this.isAdjusting = true;
-    const distance =
-      Math.round(
-        this.scroll.target / (this.mediaBounds.width + this.mediaBounds.gap)
-      ) *
-        (this.mediaBounds.width + this.mediaBounds.gap) -
-      this.scroll.target;
-    this.scroll.target += distance;
+  fromAboutTransition() {
+    this.scene.add(this.group);
+    this.onResize({ width: this.width, height: this.height });
+    this.medias.forEach((media) => {
+      media.material.uniforms.uScale.value = 1;
+      GSAP.fromTo(
+        media.material.uniforms.uOpacity,
+        {
+          value: 0,
+        },
+        {
+          value: 1,
+          duration: 1.5,
+        }
+      );
+    });
   }
 
-  onResize({ width, height }: any) {
-    this.width = width;
-    this.height = height;
-
-    this.mediaBounds = {
-      width: this.galleryElement.clientWidth,
-      height: this.galleryElement.clientHeight,
-      gap: 90,
-      unitSize: this.galleryElement.clientWidth + 90,
-    };
-
-    this.galleryWidth =
-      this.mediaLinks.length * this.mediaBounds.width +
-      this.mediaLinks.length * this.mediaBounds.gap;
-    this.group.position.x =
-      -this.galleryWidth / 2 +
-      this.mediaBounds.width / 2 +
-      this.mediaBounds.gap / 2;
-
-    this.medias.forEach((media) =>
-      media.onResize({ mediaBounds: this.mediaBounds })
-    );
-
-    this.scroll.current = this.scroll.target =
-      (this.index - 2) * (this.mediaBounds.width + this.mediaBounds.gap);
-  }
-
-  onWheel(event: any) {
-    this.direction = Math.sign(event.pixelY);
-    this.scroll.target += event.pixelY;
-    if (Math.abs(event.pixelY) < 3) {
-      // this.adjustPosition();
+  show(template: string) {
+    const activeMedia = this.medias.find(
+      (media) => media.snippetIndex === this.activePodIndex
+    )!;
+    if (this.podTexture) {
+      activeMedia.material.uniforms.uTexture.value = this.podTexture;
+    }
+    if (template === "/") {
+      this.fromHomeTransition();
+    } else if (template.includes("/detail/")) {
+      this.index = activeMedia.position;
+      this.fromDetailTransition();
+    } else if (template === "/about") {
+      this.fromAboutTransition();
+    } else {
+      this.scene.add(this.group);
     }
   }
 
-  onTouchDown(values: any) {
+  toHomeTransition() {
+    this.medias.forEach((media, index) => {
+      GSAP.to(media.material.uniforms.uScale, {
+        value: 0,
+        delay: index * 0.02,
+        duration: 0.6,
+      });
+    });
+  }
+
+  toDetailTransition() {
+    this.emit(
+      "toDetail",
+      this.medias[this.index].mesh.position.x + this.group.position.x,
+      this.medias[this.index].mesh.position.z
+    );
+    const duration = 1.5;
+    GSAP.to(this.medias[this.index].material.uniforms.uTransition, {
+      value: 0,
+      duration: 0.3,
+      onComplete: () => {
+        this.medias[this.index].material.uniforms.uOpacity.value = 0;
+      },
+    });
+    this.medias.forEach((media, index) => {
+      if (index !== this.index) {
+        GSAP.to(media.material.uniforms.uOpacity, {
+          value: 0,
+          duration,
+        });
+      }
+    });
+    GSAP.delayedCall(duration, () => {
+      this.scene.remove(this.group);
+    });
+  }
+
+  hide(template: any) {
+    if (template === "/") {
+      this.toHomeTransition();
+    } else if (template.includes("/detail/")) {
+      this.toDetailTransition();
+    } else {
+      this.scene.remove(this.group);
+    }
+  }
+
+  onResize({ width, height }: { width: number; height: number }) {
+    this.width = width;
+    this.height = height;
+
+    this.mediaSize = this.galleryElement.clientWidth;
+    this.gapSize = this.gap.clientWidth;
+    this.unitSize = this.mediaSize + this.gapSize;
+    this.zMagnitude = Math.min(this.mediaSize, 400);
+
+    this.galleryWidth = this.numMedias * this.unitSize;
+
+    this.group.position.x = 0.5 * (this.unitSize - this.galleryWidth);
+
+    this.medias.forEach((media) =>
+      media.onResize({
+        galleryWidth: this.galleryWidth,
+        upperBound: this.galleryWidth - 0.5 * this.unitSize,
+        lowerBound: -0.5 * this.unitSize,
+        scale: this.mediaSize,
+        unitSize: this.unitSize,
+      })
+    );
+
+    this.scroll.current = this.scroll.target = (this.index - 2) * this.unitSize;
+
+    this.update(this.time);
+  }
+
+  onWheel(scroll: number) {
+    if (!this.isTransitioning) {
+      this.scroll.target += scroll;
+    }
+  }
+
+  onTouchDown({ x, y }: { x: number; y: number }) {
+    this.touchStart = x;
     this.scroll.start = this.scroll.current;
   }
 
-  onTouchMove(values: any) {
-    if (!values.idDown) return;
-    const distance = values.x.start - values.x.end;
-    console.log(distance);
+  onTouchMove({ x, y }: { x: number; y: number }) {
+    const distance = this.touchStart - x;
     if (Math.abs(distance) > 1) {
       this.mediaLinks[this.index].classList.add(
         "explore__gallery__link--dragging"
       );
     }
-    this.scroll.target = this.scroll.start + distance;
+    this.scroll.target = this.scroll.start + distance * 3;
   }
 
-  onTouchUp(values: any) {
+  onTouchUp() {
     this.mediaLinks.forEach((element) =>
       element.classList.remove("explore__gallery__link--dragging")
     );
-    // this.adjustPosition();
-  }
-
-  destroy() {}
-
-  updateTitles() {
-    this.titles.style.transform = `translateX(${this.time + 100000}px)`;
   }
 
   updateIndex(center: number) {
@@ -182,6 +273,7 @@ export default class Explore {
     if (index < 0) index += 5;
 
     if (this.index !== index) {
+      this.emit("scrolling snippets");
       this.mediaLinks[this.index].classList.remove(
         "explore__gallery__link--active"
       );
@@ -194,48 +286,48 @@ export default class Explore {
     }
   }
 
-  update({ time }: any) {
+  update(time: number) {
     this.time = time;
-    this.updateTitles();
 
     const distanceFromTarget = this.scroll.target - this.scroll.current;
+    this.direction = distanceFromTarget >= 0 ? 1 : 0;
 
-    this.scroll.current += distanceFromTarget * 0.11;
+    this.scroll.previous = this.scroll.current;
 
-    const distanceFromCenter = this.scroll.current / this.mediaBounds.unitSize;
+    const speed = distanceFromTarget * 0.11;
+    this.speed = clamp(speed, -80, 80) / 80;
+
+    this.scroll.current += speed;
+
+    const distanceFromCenter = this.scroll.current / this.unitSize;
 
     const center = Math.round(distanceFromCenter);
     this.updateIndex(center);
 
     const discrepancy = center - distanceFromCenter;
 
-    // this.scroll.target += 0.04 * discrepancy * this.mediaBounds.unitSize;
-
-    // this.scroll.target +=
-    //   clamp(discrepancy * 16, -0.4, 0.4) * this.mediaBounds.width * 0.01;
-
     this.scroll.target +=
-      Math.abs(discrepancy) ** 0.5 *
-      this.mediaBounds.width *
+      Math.sqrt(Math.abs(discrepancy)) *
+      this.mediaSize *
       0.01 *
       Math.sign(discrepancy);
-
-    const speed = this.scroll.current - this.previous;
-    const shaderspeed = clamp(speed, -120, 120) / 120;
-    this.previous = this.scroll.current;
 
     this.medias.forEach((media) => {
       media.update({
         scroll: this.scroll.current,
-        galleryWidth: this.galleryWidth,
       });
 
+      const deltaZ = Math.cos(
+        Math.PI *
+          ((media.mesh.position.x - this.unitSize) / this.group.position.x)
+      );
+
+      media.mesh.position.z = deltaZ * this.zMagnitude;
+
       media.material.uniforms.uTime.value = this.time;
-      if (this.isAdjusting) {
-        media.material.uniforms.uSpeed.value *= 0.9;
-      } else {
-        media.material.uniforms.uSpeed.value = shaderspeed;
-      }
+      media.material.uniforms.uSpeed.value = this.speed;
+      media.material.uniforms.uDirection.value = this.direction;
+      media.material.uniforms.uZ.value = deltaZ / 0.7;
     });
   }
 }

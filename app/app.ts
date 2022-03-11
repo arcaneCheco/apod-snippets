@@ -1,5 +1,3 @@
-import { Pane } from "tweakpane";
-
 import Canvas from "./components/Canvas";
 
 import NormalizeWheel from "normalize-wheel";
@@ -12,47 +10,140 @@ import About from "./pages/About";
 import Explore from "./pages/Explore";
 import Detail from "./pages/Detail";
 import Preloader from "./components/Preloader";
-import { resolve } from "path/posix";
+import Icon from "./components/Icon";
+import Navigation from "./components/Navigation";
+import Footer from "./components/Footer";
+import Detection from "./classes/Detection";
+
+import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
+
+// import Sound from "./components/Sound";
+class Sound {}
 
 class App {
   template: string;
   canvas: Canvas;
   home: Home;
-  about: Page;
-  explore: Page;
-  detail: Page;
+  about: About;
+  explore: Explore;
+  detail: Detail;
   pages: { [key: string]: Page };
-  page: Page;
+  page: Home | About | Explore | Detail;
   assets: Assets;
-  preloader: any;
-  debug: Pane;
+  preloader: Preloader;
+  icon: Icon;
+  navigation: Navigation;
+  footer: Footer;
+  sound: Sound;
+  isDown = false;
+  touchEnd = { x: 0, y: 0 };
   constructor() {
     this.template = window.location.pathname;
 
-    this.setDebug();
+    defineBentoFitText();
+
     this.setCanvas();
+    this.setAssets();
     this.setPreloader();
-    // this.setAssets();
+    this.setIcon();
+    this.setFooter();
+    this.setNavigation();
     this.setPages();
 
-    this.addEventListeners();
     this.addLinkListeners();
+  }
 
-    this.update();
+  setSound() {
+    this.sound = new Sound();
+
+    // this.footer.on("sound enabled", () => {
+    //   this.sound.enableSound();
+    // });
+    // this.footer.on("sound disabled", () => {
+    //   this.sound.disableSound();
+    // });
+    // this.navigation.on("open nav", () => {
+    //   this.sound.onOpenNav();
+    // });
+    // this.navigation.on("close nav", () => {
+    //   this.sound.onCloseNav();
+    // });
+    // this.navigation.on("enter nav icon", () => {
+    //   this.sound.onEnterNavIcon();
+    // });
+    // this.canvas.particles.on("vibrate particles start", () => {
+    //   this.sound.onVibrateParticlesStart();
+    // });
+    // this.canvas.particles.on("vibrate particles end", () => {
+    //   this.sound.onVibrateParticlesEnd();
+    // });
+    // this.canvas.detail.on("enter fullscreen", () => {
+    //   this.sound.onEnterFullscreen();
+    // });
+    // this.canvas.detail.on("exit fullscreen", () => {
+    //   this.sound.onExitFullscreen();
+    // });
+    // this.canvas.detail.on("pod scroll transition", () => {
+    //   this.sound.onPodScrollTransition();
+    // });
+    // this.preloader.on("enter site", () => {
+    //   this.sound.enableSound();
+    // });
+    // this.canvas.explore.on("scrolling snippets", () => {
+    //   this.sound.onScrollingSnippets();
+    // });
+    // this.canvas.trail.on("update trail", () => {
+    //   this.sound.onUpdateTrail();
+    // });
   }
 
   setCanvas() {
-    this.canvas = new Canvas({ template: this.template, debug: this.debug });
-  }
-
-  setPreloader() {
-    this.preloader = new Preloader();
-    this.preloader.once("completed", this.onPreloaded.bind(this));
+    this.canvas = new Canvas({ template: this.template });
   }
 
   setAssets() {
-    this.assets = new Assets();
-    this.assets.once("completed", this.onPreloaded.bind(this));
+    this.assets = new Assets(this.canvas.renderer);
+    this.assets.on("asset loaded", (progress: number, image: string) => {
+      this.preloader.onAssetLoaded(progress, image);
+      this.icon.onAssetLoaded(progress);
+    });
+    this.assets.once("all assets loaded", () => {
+      this.preloader.onAllAssetsLoaded();
+      this.onPreloaded();
+    });
+  }
+
+  setPreloader() {
+    this.preloader = new Preloader({
+      template: this.template,
+    });
+
+    this.preloader.on("enter site", () => {
+      this.bindEvents();
+      this.addEventListeners();
+      this.onResize();
+    });
+  }
+
+  setIcon() {
+    this.icon = new Icon({
+      template: this.template,
+    });
+
+    this.preloader.on("enter site", () => {
+      this.icon.onEnterSite();
+    });
+    this.preloader.on("destroy preloader", () => {
+      this.icon.onDestroyPreloader();
+    });
+  }
+
+  setFooter() {
+    this.footer = new Footer();
+  }
+
+  setNavigation() {
+    this.navigation = new Navigation();
   }
 
   setPages() {
@@ -74,11 +165,10 @@ class App {
     });
 
     this.page = this.pages[this.template];
-  }
 
-  setDebug() {
-    this.debug = new Pane();
-    this.debug.containerElem_.style.zIndex = "100";
+    this.about.on("navigate to home", () => {
+      this.onChange({ url: "/" });
+    });
   }
 
   /**
@@ -87,26 +177,67 @@ class App {
   async onChange({ url, push = true }: any) {
     url = url.replace(window.location.origin, "");
 
+    console.log(this.template, url);
+
+    if (this.template === url) {
+      this.navigation.onChange();
+      return;
+    }
+
     if (push) {
       window.history.pushState({}, "", url);
     }
+
+    // this.sound.onChange({ from: this.template, to: window.location.pathname });
 
     this.template = window.location.pathname;
 
     const page = this.pages[this.template];
 
+    this.icon.onChange(this.template);
+    this.navigation.onChange();
+
     await this.page.hide();
-    this.canvas.onChange(this.template);
 
     this.page = page;
+    this.onResize(undefined, true);
+    await this.canvas.onChange(this.template);
+
     this.page.show();
-    this.onResize();
   }
 
   onPreloaded() {
-    this.onResize();
     this.canvas.onPreloaded();
+    this.onResize();
+    // this.setSound();
     this.page.show();
+    this.update();
+
+    if (this.page instanceof About) {
+      this.page.returnPageSet = false;
+    }
+
+    this.canvas.particles.on("goToEplore", () => {
+      this.onChange({ url: "/explore" });
+    });
+    this.canvas.detail.on("enterFullscreen", () => {
+      this.page instanceof Detail && this.page.onEnterFullscreen();
+    });
+    this.canvas.detail.on("exitFullscreen", () => {
+      this.page instanceof Detail && this.page.onExitFullscreen();
+    });
+    this.canvas.detail.on("orbit control enabled", () => {
+      this.page instanceof Detail && (this.page.isScrollable = false);
+    });
+    this.canvas.detail.on("orbit control disabled", () => {
+      this.page instanceof Detail && (this.page.isScrollable = true);
+    });
+    this.icon.on("mouse enter icon", () => {
+      this.canvas.particles.onMouseEnterLink();
+    });
+    this.icon.on("mouse exit icon", () => {
+      this.canvas.particles.onMouseExitLink();
+    });
   }
 
   onPopState() {
@@ -117,67 +248,118 @@ class App {
   }
 
   onWheel(event: Event) {
-    const normalizedWheel = NormalizeWheel(event);
+    if (this.navigation.isOpen) return;
+    const { pixelY } = NormalizeWheel(event);
 
-    this.canvas && this.canvas.onWheel(normalizedWheel);
+    this.canvas.onWheel(pixelY);
 
-    this.page.isScrollable && this.page.onWheel(normalizedWheel);
+    this.page.isScrollable && this.page.onWheel(pixelY);
   }
 
-  onTouchDown(event: Event) {
-    this.canvas.onTouchDown(event);
-    this.page.onTouchDown(event);
+  onTouchDown(event: TouchEvent | MouseEvent) {
+    if (this.navigation.isOpen) return;
+
+    this.isDown = true;
+
+    let x: number, y: number;
+    if (event instanceof TouchEvent) {
+      x = event.touches[0].clientX;
+      y = event.touches[0].clientY;
+    } else {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
+    this.canvas.onTouchDown({ x, y });
+    this.page.onTouchDown(y);
   }
 
-  onTouchMove(event: Event) {
-    this.canvas.onTouchMove(event);
-    // console.log("moving");
-    this.page.onTouchMove(event);
+  onTouchMove(event: TouchEvent | MouseEvent) {
+    if (this.navigation.isOpen) return;
+
+    let x: number, y: number;
+    if (event instanceof TouchEvent) {
+      x = event.touches[0].clientX;
+      y = event.touches[0].clientY;
+      this.touchEnd.x = x;
+      this.touchEnd.y = y;
+    } else {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
+    this.canvas.onTouchMove({ x, y, isDown: this.isDown });
+    this.isDown && this.page.isScrollable && this.page.onTouchMove(y);
   }
 
-  onTouchUp(event: Event) {
-    this.canvas.onTouchUp(event);
-    this.page.onTouchUp(event);
+  onTouchUp(event: TouchEvent | MouseEvent) {
+    if (this.navigation.isOpen) return;
+    this.isDown = false;
+
+    let x: number, y: number;
+    if (event instanceof TouchEvent) {
+      x = this.touchEnd.x;
+      y = this.touchEnd.y;
+    } else {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
+    this.canvas.onTouchUp({ x, y });
   }
 
-  onResize() {
-    this.canvas.onResize();
+  onResize(_?: any, transition?: boolean) {
+    this.canvas.onResize(transition);
 
     this.page.onResize();
   }
 
+  bindEvents() {
+    this.onPopState = this.onPopState.bind(this);
+    this.onWheel = this.onWheel.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onTouchDown = this.onTouchDown.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onTouchUp = this.onTouchUp.bind(this);
+  }
+
   addEventListeners() {
-    window.addEventListener("popstate", this.onPopState.bind(this));
+    window.addEventListener("popstate", this.onPopState);
 
-    window.addEventListener("wheel", this.onWheel.bind(this));
-    window.addEventListener("resize", this.onResize.bind(this));
+    window.addEventListener("resize", this.onResize);
 
-    window.addEventListener("mousedown", this.onTouchDown.bind(this));
-    window.addEventListener("mousemove", this.onTouchMove.bind(this));
-    window.addEventListener("mouseup", this.onTouchUp.bind(this));
+    // if (Detection.isDesktop()) {
+    window.addEventListener("wheel", this.onWheel);
+    window.addEventListener("mousedown", this.onTouchDown);
+    window.addEventListener("mousemove", this.onTouchMove);
+    window.addEventListener("mouseup", this.onTouchUp);
+    // }
 
-    window.addEventListener("touchstart", this.onTouchDown.bind(this));
-    window.addEventListener("touchmove", this.onTouchMove.bind(this));
-    window.addEventListener("touchend", this.onTouchUp.bind(this));
+    window.addEventListener("touchstart", this.onTouchDown);
+    window.addEventListener("touchmove", this.onTouchMove);
+    window.addEventListener("touchend", this.onTouchUp);
   }
 
   addLinkListeners() {
     const links = document.querySelectorAll("a");
 
     links.forEach((link) => {
+      const { href } = link;
+      const isLocal = href.indexOf(window.location.origin) > -1;
+
+      console.log(href, isLocal);
+
       link.onclick = (event) => {
-        event.preventDefault();
-
-        const { href } = link;
-
-        this.onChange({ url: href });
+        if (isLocal) {
+          event.preventDefault();
+          this.onChange({ url: link.href });
+        }
       };
     });
   }
 
   update() {
-    this.canvas && this.canvas.update();
-
+    this.canvas && this.canvas.update(this.page.scroll.current);
     this.page && this.page.update();
 
     window.requestAnimationFrame(this.update.bind(this));

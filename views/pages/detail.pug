@@ -1,15 +1,17 @@
-.detail(id=pod.uid)
+.detail(id=pod.uid data-index=pod.data.index)
+  .detail__navigation__wrapper
+    .detail__close
+      a.detail__close__link(href="/explore")
+        p.detail__close__text='Close'
   .detail__wrapper 
-    .detail__title=pod.data.title 
-
-    //- figure.detail__cover 
-    //-   img.detail__cover__image(alt pod.data.image.alt src=pod.data.image.url data-src=pod.data.image.url)
-
+    .detail__title
+      .detail__title__box
+        bento-fit-text.detail__title__text=pod.data.title
     .detail__explanation
       each item in pod.data.images 
         .detail__explanation__slice
           figure.detail__explanation__media 
-            img.detail__explanation__media__image(src=item.images_image.url data-src=src=item.images_image.url, alt=item.images_image.alt)
-          p.detail__explanation__text=item.explanation1
-    
-    a.detail__close(href="/explore")="Close"
+            img.detail__explanation__media__image(data-src=item.media.name, alt=item.media.name)
+          .detail__explanation__panel
+            .detail__explanation__text__box
+              bento-fit-text.detail__explanation__text=item.explanation1

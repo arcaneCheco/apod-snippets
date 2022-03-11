@@ -1,46 +1,30 @@
-#define PI 3.1415
-
 uniform sampler2D uTexture;
 uniform sampler2D uDisplacementMap;
-uniform float uAdjusting;
+uniform sampler2D uDisplacementMap2;
 uniform float uSpeed;
-uniform float uProgress;
 uniform float uDirection;
-
+uniform float uTransition;
+uniform float uOpacity;
+uniform float uZ;
 
 varying vec2 vUv;
 
 void main() {
-    vec4 d = texture2D(uDisplacementMap, vUv);
+    float dR = texture2D(uDisplacementMap, vUv).r;
+    float dL = texture2D(uDisplacementMap2, vUv).r;
     vec2 dUv = vUv;
-    // dUv.x += d.r * uProgress;
-    dUv.x = mix(vUv.x, d.r - 0.2, uSpeed);
-    vec4 image = texture2D(uTexture, dUv);
-    image.r = texture2D(uTexture, dUv + vec2(0.02*uSpeed, 0.)).r;
-    image.g = texture2D(uTexture, dUv + vec2(0.04*uSpeed, 0.)).g;
-    image.b = texture2D(uTexture, dUv + vec2(0.06*uSpeed, 0.)).b;
-    // vec4 finalColor = mix(image, vec4(1., 0., 0., 1.), 0.1);
-    gl_FragColor = image;
-    // gl_FragColor = d;
+    dUv.x = mix(vUv.x, dR * uDirection + (1.-uDirection) * (1. - dL), abs(uSpeed) * 4.5);
 
+    vec4 image = texture2D(uTexture, dUv);
+    vec3 colorDistortion = vec3(texture2D(uTexture, dUv + vec2(0.12*uSpeed, 0.)).r, texture2D(uTexture, dUv + vec2(0.34*uSpeed, 0.)).g, texture2D(uTexture, dUv + vec2(0.56*uSpeed, 0.)).b);
+    image.rgb = mix(image.rgb, colorDistortion, uTransition);
+
+    float gray = 0.21 * image.r + 0.71 * image.g + 0.07 * image.b;
+
+    vec4 notCurrent = vec4(vec3(gray), 0.6);
+
+    gl_FragColor =  mix(notCurrent, image, 1. - abs(uZ));
+    gl_FragColor.a *= uOpacity;
     
 
 }
-
-
-// vec2 nUv = vUv - vec2(0.5);
-    // float dist = distance(nUv, vec2(0.));
-
-    // float angle = atan(nUv.x, nUv.y) / (PI * 2.0) + 0.5;
-    // float radius = 0.25 + sin(angle * 100.0) * 0.02;
-    // float strength = 1.0 - step(0.01, abs(dist) - radius);
-    // gl_FragColor = vec4(1., 0., 0., strength);
-
-    // vec2 wavedUv = vec2(
-    // nUv.x,
-    // nUv.y + sin(nUv.x * 30.0) * 0.1
-    // );
-
-    // strength = 1.0 - step(0.01, distance(wavedUv, vec2(0.)) - 0.25);
-
-    // gl_FragColor = vec4(vec3(strength), 1.);

@@ -13,16 +13,12 @@ uniform float uMultiplier;
 uniform sampler2D uTexture;
 uniform float uSpeedXsmoke;
 uniform float uSpeedYsmoke;
-
+uniform float uBlack;
+uniform float uBlackGradient;
+uniform float uWhite;
+uniform vec2 uMouse;
 
 varying vec2 vUv;
-
-vec2 rotate(vec2 v, float a) {
-	float s = sin(a);
-	float c = cos(a);
-	mat2 m = mat2(c, -s, s, c);
-	return m * v;
-}
 
 void main()
 {
@@ -33,31 +29,36 @@ void main()
 	float trail = texture2D(uTrail, vUv).r;
 	float a = trail*PI2;
     vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));
-    nUv += distortion;
+    nUv -= distortion*2.*nUv;
 
 	// colors
-	vec4 neb = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.));
-	vec3 color = neb.rbg;
+	vec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;
+	// color *= 0.; //not-original
 
-	float offset = -0.5;
+	float offset = -0.45;
 
-	vec3 col = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb;
-	color += offset * col;
-	color += vec3(1., 0.8, 0.8) * trail;
-	// color += vec3(1., 0.8, 0.8) * sqrt(trail);
+	vec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;
+	color -= pColor;
+
+
 
 	color = color * uMultiplier;
 
 
-
-	// smoke
-	float strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.9;
-
-	strength -= trail*0.1;
+	float strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;
 
 	gl_FragColor = vec4(color, strength);
+	
+	// gl_FragColor *= 2.; //not-original
 
-	gl_FragColor -= smoothstep(0.4, 0.5, abs(nUv.y));
+	float dist = abs(nUv.y);
+	dist = smoothstep(uBlack, uBlackGradient + uBlack, dist);
+	gl_FragColor += clamp(dist*3., 0. ,1.);
+	gl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;
+
+	// gl_FragColor.rgb = vec3(1.5) - gl_FragColor.rgb; //not-original
+	// gl_FragColor.a = 1.; //not-original
+	gl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);
 }
 
 

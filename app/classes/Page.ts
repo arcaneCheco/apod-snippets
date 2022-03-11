@@ -1,6 +1,5 @@
 import EventEmitter from "events";
 import { clamp, lerp } from "three/src/math/MathUtils";
-import GSAP from "gsap";
 
 interface Props {
   classes: any;
@@ -15,8 +14,8 @@ export default class Page extends EventEmitter {
   isScrollable;
   element: any;
   elements: any;
-  isVisible: boolean;
   scroll;
+  // isDown = false;
   constructor({ classes, element, elements, isScrollable = true }: Props) {
     super();
 
@@ -38,6 +37,7 @@ export default class Page extends EventEmitter {
       target: 0,
       limit: 5000,
       last: 0,
+      touchPosition: 0,
     };
 
     this.isScrollable = isScrollable;
@@ -68,52 +68,14 @@ export default class Page extends EventEmitter {
         }
       }
     });
-
-    this.setAnimations();
-    this.setObserver();
-    this.setPreloaders();
   }
 
-  setAnimations() {}
-
-  setObserver() {}
-
-  setPreloaders() {}
-
-  show() {
-    this.isVisible = true;
-
-    this.addEventListeners();
-  }
+  show() {}
 
   hide() {
-    this.isVisible = false;
-
-    this.removeEventListeners();
-
     this.element.classList.remove(this.classes.active);
 
-    return new Promise<void>((resolve) => {
-      window.setTimeout(resolve, 3500);
-    });
-    // return new Promise((resolve: any) => {
-    //   GSAP.to(this.element, {
-    //     autoAlpha: 0,
-    //     duration: 0.5,
-    //     onComplete: () => console.log("hello"),
-    //   });
-    // });
-  }
-
-  resetScroll() {
-    this.scroll = {
-      ease: 0.07,
-      position: 0,
-      current: 0,
-      target: 0,
-      limit: 0,
-      last: 0,
-    };
+    return Promise.resolve();
   }
 
   setScroll(value: number) {
@@ -129,25 +91,23 @@ export default class Page extends EventEmitter {
   onResize() {
     window.requestAnimationFrame(() => {
       this.scroll.limit =
-        this.elements.wrapper.clientHeight - window.innerHeight;
+        this.elements.wrapper.scrollHeight - this.elements.wrapper.clientHeight;
     });
   }
 
-  onWheel(event: any): number {
-    const { pixelY } = event;
-    this.scroll.target += pixelY;
-    return pixelY;
+  onWheel(scroll: number) {
+    this.scroll.target += scroll;
   }
 
-  onTouchDown(event: Event) {}
+  onTouchDown(position: number) {
+    this.scroll.touchPosition = position;
+  }
 
-  onTouchMove(event: Event) {}
-
-  onTouchUp(event: Event) {}
-
-  addEventListeners() {}
-
-  removeEventListeners() {}
+  onTouchMove(position: number) {
+    const diff = this.scroll.touchPosition - position;
+    this.scroll.touchPosition = position;
+    this.scroll.target += diff * 4;
+  }
 
   update() {
     if (this.isScrollable) {

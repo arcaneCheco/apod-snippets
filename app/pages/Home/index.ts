@@ -10,15 +10,14 @@ export default class Home extends Page {
       element: ".home",
       elements: {
         wrapper: ".home__wrapper",
+        particles: ".home__particles",
       },
       isScrollable: false,
     });
-
-    console.log(this.hide);
   }
 
   show() {
-    // GSAP.to(this.element, {autoAlpha: 1, duration: 0.5})
+    GSAP.to(this.element, { autoAlpha: 1, duration: 0.5, ease: "expo.in" });
     this.element.classList.add(this.classes.active);
   }
 
@@ -27,6 +26,7 @@ export default class Home extends Page {
       GSAP.to(this.element, {
         autoAlpha: 0,
         duration: 0.5,
+        ease: "expo.out",
         onComplete: () => {
           this.element.classList.remove(this.classes.active);
           resolve();

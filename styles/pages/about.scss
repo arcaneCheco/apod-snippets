@@ -6,24 +6,183 @@
   &--active {
     @extend %page--active;
   }
+  display: flex;
+  position: absolute;
 }
 
 .about__wrapper {
+  align-self: center;
+  // top: 10vh;
+  height: 80%;
+  color: white;
+  width: 100%;
+}
+
+.about__content {
+  margin-top: 2rem;
+  padding: 3rem;
+  width: 100%;
+  height: 100%;
+
+  @include media("<phone") {
+    // text-align: center;
+    margin-top: 4rem;
+    padding: 1rem;
+  }
+}
+
+.about__header {
+  font-size: 8rem;
+  margin-bottom: 4rem;
 }
 
 .about__section {
-  margin: 2rem;
-}
-
-.about__section__title {
-  font-size: 5rem;
-}
-
-.about__section__text {
+  width: 75%;
+  display: block;
   font-size: 2rem;
+  line-height: 3rem;
+  & > p > .start {
+    font-size: 5rem;
+    @include media("<tablet") {
+      // text-align: center;
+      width: 100%;
+    }
+  }
+  & a {
+    font-weight: 2000;
+    color: rgb(255, 255, 255);
+    text-decoration: underline 4px rgba(0, 0, 0, 0.295);
+    transition: text-decoration-color 300ms;
+    font-size: 3rem;
+
+    &:hover {
+      text-decoration-color: rgb(255, 255, 255);
+    }
+  }
+
+  @include media("<tablet") {
+    // text-align: justify;
+    width: 100%;
+  }
+}
+
+.about__section__break {
+  width: 75%;
+  height: 1rem;
+  margin: 4rem 0;
+  display: block;
+
+  @include media("<tablet") {
+    width: 100%;
+  }
+
+  & > svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.credits__toggle {
+  background: rgba(167, 174, 180, 0.301);
+  display: flex;
+  // width: auto;
+  width: 0;
+  min-width: fit-content;
+  height: fit-content;
+  padding: 1rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  transition: width 1s ease;
+  @include media("<phone") {
+    width: 100%;
+  }
+  &:hover {
+    background: rgba(167, 174, 180, 0.808);
+    cursor: pointer;
+  }
+
+  &.active {
+    background: rgba(167, 174, 180, 0.808);
+    width: 75%;
+    @include media("<tablet") {
+      width: 100%;
+    }
+  }
+
+  .credits__toggle__text {
+    font-size: 4rem;
+
+    &::before {
+      content: "\002B";
+      margin-right: 1rem;
+    }
+
+    &.active {
+      &::before {
+        content: "\2212";
+      }
+    }
+  }
+}
+
+.about__credits__podlist {
+  max-height: 0;
+  overflow: hidden;
+  list-style: unset;
+  padding-left: 4rem;
+  @include media("<phone") {
+    padding-left: 0;
+  }
+
+  &.active {
+    max-height: none;
+  }
+
+  & a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .about__credits__podname {
+    margin: 2rem 0;
+    font-size: 2rem;
+    ul {
+      list-style: unset;
+      padding-left: 4rem;
+      @include media("<phone") {
+        padding-left: 2rem;
+      }
+
+      .about__credits__pod__original {
+        margin: 1rem 0;
+        &::after {
+          content: "\1F517";
+          margin-left: 0.4rem;
+        }
+      }
+
+      .about__credits__pod__images {
+        font-size: 1.5rem;
+
+        .about__credits__pod__image__item {
+          margin: 1rem 0;
+
+          &::after {
+            content: "\1F517";
+            margin-left: 0.4rem;
+          }
+        }
+      }
+    }
+  }
 }
 
 .about__link {
   font-size: 2rem;
-  margin: 2rem;
+  color: rgb(117, 117, 117);
+  text-shadow: 1px 1px #ffffff88;
+  transition: color 1s ease;
+  &:hover {
+    color: white;
+    cursor: pointer;
+  }
 }

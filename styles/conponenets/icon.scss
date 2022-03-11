@@ -1,0 +1,32 @@
+.icon {
+  @extend %cover;
+  @extend %center;
+  z-index: z("icon");
+  pointer-events: none;
+}
+
+.icon__wrapper {
+  height: 10vw;
+  max-height: 13rem;
+  min-height: 7rem;
+  width: auto;
+
+  position: absolute;
+  overflow: hidden;
+
+  & > svg {
+    height: 100%;
+  }
+}
+
+.icon__link {
+  width: 50%;
+  height: 50%;
+  transform: translate(50%, 50%);
+  position: absolute;
+  border-radius: 50%;
+}
+
+.icon__loading {
+  z-index: 99;
+}

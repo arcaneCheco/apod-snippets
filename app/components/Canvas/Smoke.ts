@@ -1,20 +1,15 @@
 import * as THREE from "three";
-import img from "./smoke3.png";
-import imgN from "./nebula1.jpeg";
-import imgR from "./noise1.png";
-import imgC from "./palette.png";
+import GSAP from "gsap";
 import vertexShader from "../../shaders/smoke/vertex.glsl";
 import fragmentShader from "../../shaders/smoke/fragment.glsl";
 
 export default class Smoke {
   group;
-  textureLoader;
   geometry: any;
   material: any;
   meshes: any;
   width;
   height;
-  debug: any;
   color: any;
   smokeColor: any;
   mesh: any;
@@ -23,116 +18,167 @@ export default class Smoke {
   aspect: any;
   parentWidth: any;
   parentHeight: any;
-  constructor({ scene, width, height, debug, trail, fov, aspect }: any) {
+  template: any;
+  fogTexture: any;
+  nebulaTexture: any;
+  colorPaletteTexture: THREE.Texture;
+  mouse: THREE.Vector2 = new THREE.Vector2();
+  constructor({ scene, width, height, trail, fov, aspect, template }: any) {
     this.parentWidth = width;
     this.parentHeight = height;
+    this.template = template;
     this.fov = fov;
     this.aspect = aspect;
-    this.height = 800 * Math.tan((fov * Math.PI) / 180 / 2);
+    this.height = 7000 * Math.tan((fov * Math.PI) / 360);
     this.width = this.height * aspect;
     this.group = new THREE.Group();
-    this.textureLoader = new THREE.TextureLoader();
     scene.add(this.group);
 
     this.trail = trail;
 
-    debug && this.setDebug(debug);
-
+    this.setTextures();
     this.setMaterial();
   }
 
-  setDebug(debug: any) {
-    this.debug = debug.addFolder({ title: "Smoke" });
+  setTextures() {
+    this.fogTexture = window.TEXTURES.fog;
+    this.nebulaTexture = window.TEXTURES.nebula;
+    this.colorPaletteTexture = window.TEXTURES.palette;
   }
 
   setMaterial() {
     this.geometry = new THREE.PlaneGeometry(1, 1);
-    const tex = this.textureLoader.load(img);
-    const texN = this.textureLoader.load(imgN);
-    const texR = this.textureLoader.load(imgR);
-    const texC = this.textureLoader.load(imgC);
-    tex.generateMipmaps = false;
-    texN.generateMipmaps = false;
-    texR.generateMipmaps = false;
-    texC.generateMipmaps = false;
     this.material = new THREE.ShaderMaterial({
       vertexShader,
       fragmentShader,
+      depthTest: false,
       uniforms: {
         uTime: { value: 0 },
         uAspect: { value: this.width / this.height },
-        uTexture: { value: tex },
-        uTextureN: { value: texN },
-        uTextureC: { value: texC },
+        uTexture: { value: this.fogTexture },
+        uTextureN: { value: this.nebulaTexture },
+        uTextureC: { value: this.colorPaletteTexture },
         uTrail: { value: this.trail },
-        uDistortion: { value: 0.6 },
+        uDistortion: { value: 0.9 },
         uSpeedXneb: { value: 0.05 },
         uSpeedYneb: { value: 0.05 },
-        uSpeedXsmoke: { value: 0.25 },
-        uSpeedYsmoke: { value: 0.15 },
-        uMultiplier: { value: 3 },
-        uColorSpeed: { value: 0.3 },
+        uSpeedXsmoke: { value: 0.08 },
+        uSpeedYsmoke: { value: 0.04 },
+        uMultiplier: { value: 1 },
+        uColorSpeed: { value: 0.1 },
+        uBlack: { value: 0.26 },
+        uBlackGradient: { value: 0.7 },
+        uWhite: { value: 0 },
       },
       transparent: true,
     });
     this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.mesh.position.z = 100;
+    this.mesh.renderOrder = -10;
+    this.mesh.position.z = -3000;
     this.mesh.scale.set(this.width, this.height, 1);
     this.group.add(this.mesh);
+  }
 
-    if (this.debug) {
-      this.debug.addInput(this.material.uniforms.uDistortion, "value", {
-        label: "uDistortion",
-        min: 0,
-        max: 5,
-        step: 0.01,
+  onResize({ camera }: any) {
+    this.height = 7000 * Math.tan((camera.fov * Math.PI) / 360);
+    this.width = this.height * camera.aspect;
+    this.mesh.scale.set(this.width, this.height, 1);
+    this.material.uniforms.uAspect.value = this.width / this.height;
+  }
+
+  onChange(template: any, isPreloaded: boolean) {
+    console.log("changing background");
+    console.log(template);
+    if (template.includes("/detail/")) {
+      GSAP.to(this.material.uniforms.uMultiplier, {
+        value: 0.25,
+        duration: 1.5,
       });
-      this.debug.addInput(this.material.uniforms.uSpeedXneb, "value", {
-        label: "uSpeedXneb",
-        min: -0.2,
-        max: 0.2,
-        step: 0.001,
-      });
-      this.debug.addInput(this.material.uniforms.uSpeedYneb, "value", {
-        label: "uSpeedYneb",
-        min: -0.2,
-        max: 0.2,
-        step: 0.001,
-      });
-      this.debug.addInput(this.material.uniforms.uSpeedXsmoke, "value", {
-        label: "uSpeedXsmoke",
-        min: -0.6,
-        max: 2,
-        step: 0.001,
-      });
-      this.debug.addInput(this.material.uniforms.uSpeedYsmoke, "value", {
-        label: "uSpeedYsmoke",
-        min: -0.6,
-        max: 0.6,
-        step: 0.001,
-      });
-      this.debug.addInput(this.material.uniforms.uMultiplier, "value", {
-        label: "uMultiplier",
-        min: 0,
-        max: 6,
-        step: 0.01,
-      });
-      this.debug.addInput(this.material.uniforms.uColorSpeed, "value", {
-        label: "uColorSpeed",
-        min: 0,
-        max: 1,
-        step: 0.01,
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0,
+        duration: 1.5,
       });
     }
+    if (template === "/explore") {
+      GSAP.to(this.material.uniforms.uMultiplier, {
+        value: 1,
+        duration: 1.5,
+      });
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0,
+        duration: 1.5,
+      });
+    }
+    if (template === "/about") {
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0.7,
+        duration: 1.5,
+      });
+    }
+    if (template === "/") {
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0,
+        duration: 1.5,
+      });
+      if (this.template !== "/") {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0,
+          duration: 1.5,
+          onComplete: () => {
+            this.material.uniforms.uBlackGradient.value = 1;
+            this.material.uniforms.uBlack.value = 1;
+          },
+        });
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.28,
+          duration: 2.5,
+          delay: 1.5,
+        });
+      } else {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.28,
+          duration: 1.5,
+        });
+        GSAP.to(this.material.uniforms.uBlackGradient, {
+          value: 0.8,
+          duration: 1.5,
+        });
+        GSAP.to(this.material.uniforms.uMultiplier, {
+          value: 1,
+          duration: 1.5,
+        });
+      }
+    } else if (template !== "/") {
+      if (this.template === "/") {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 1,
+          duration: 1.5,
+          onComplete: () => {
+            this.material.uniforms.uBlackGradient.value = -1;
+            this.material.uniforms.uBlack.value = 0;
+          },
+        });
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.25,
+          duration: 1.5,
+          delay: 1.5,
+        });
+      } else {
+        this.material.uniforms.uBlackGradient.value = -1;
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.25,
+          duration: 1.5,
+          delay: 1.5,
+        });
+      }
+    }
+    if (isPreloaded) {
+    } else {
+    }
+    this.template = template;
   }
 
-  onTouchMove(values: any) {
-    // this.material.uniforms.uMouse.value.x = values.x.end / this.parentWidth;
-    // this.material.uniforms.uMouse.value.y =
-    //   1 - values.y.end / this.parentHeight;
-  }
-
-  update(delta: number, time: number) {
+  update(time: number) {
     this.material.uniforms.uTime.value = time;
   }
 }

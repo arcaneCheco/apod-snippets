@@ -1,15 +1,121 @@
 .preloader {
   @extend %center;
   @extend %cover;
-
-  background: #151515;
-  color: white;
-
   z-index: z("preloader");
 
   overflow: hidden;
 }
 
 .preloader__wrapper {
-  font-size: 18rem;
+  @extend %cover;
+  background: #000;
+  @extend %center;
+  flex-direction: column;
+  overflow: hidden;
+}
+.preloader__notification {
+  background: rgba(54, 54, 54, 0.205);
+  color: white;
+  border-radius: 4px;
+  width: 32rem;
+  min-width: 50%;
+  max-width: 90%;
+  height: 8rem;
+  z-index: 1;
+  position: absolute;
+  bottom: 11vh;
+  box-shadow: 1px 1px rgba(255, 255, 255, 0.349);
+  display: flex;
+  align-items: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+
+  &.onloaded {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .preloader__notification__text {
+    font-size: 1.8rem;
+    @include media("<phone") {
+      font-size: 1.2rem;
+    }
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
+  }
+}
+
+.preloader__icon__dummy {
+  height: 10vw;
+  max-height: 13rem;
+  min-height: 7rem;
+  width: 10vw;
+  max-width: 13rem;
+  min-width: 7rem;
+}
+.dummy__content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  visibility: hidden;
+}
+
+.preloader__title {
+  pointer-events: none;
+  height: 5vw;
+  max-height: 6.5rem;
+  min-height: 3.5rem;
+  font-size: max(min(5vw, 6.5rem), 3.5rem);
+  overflow: hidden;
+  background: black;
+  border: 2px solid black;
+  filter: contrast(110%) brightness(190%);
+  position: relative;
+}
+
+.preloader__title__text {
+  height: 100%;
+  text-align: center;
+
+  &::before,
+  &::after {
+    content: attr(data-text);
+    color: white;
+    filter: blur(0.02em);
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    pointer-events: none;
+  }
+  &::after {
+    transform: translateX(-100%);
+    mix-blend-mode: difference;
+  }
+}
+
+.gradient,
+.spotlight {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.gradient {
+  background: linear-gradient(45deg, rgb(107, 107, 107), rgb(255, 255, 255));
+  mix-blend-mode: multiply;
+}
+
+.spotlight {
+  background: radial-gradient(circle, white, transparent 25%) 0 0 / 25% 25%,
+    radial-gradient(circle, white, black 25%) 50% 50% / 12.5% 12.5%;
+  width: 200%;
+  height: 200%;
+  mix-blend-mode: color-dodge;
 }

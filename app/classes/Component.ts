@@ -17,7 +17,6 @@ export default class Component extends EventEmitter {
     this.selectorChildren = { ...elements };
 
     this.create();
-    this.addEventListeners();
   }
 
   create() {
@@ -35,18 +34,14 @@ export default class Component extends EventEmitter {
       ) {
         this.elements[key] = entry;
       } else {
-        this.elements[key] = document.querySelectorAll(entry);
+        this.elements[key] = this.element.querySelectorAll(entry);
 
         if (this.elements[key].length === 0) {
           this.elements[key] = null;
         } else if (this.elements[key].length === 1) {
-          this.elements[key] = document.querySelector(entry);
+          this.elements[key] = this.element.querySelector(entry);
         }
       }
     });
   }
-
-  addEventListeners() {}
-
-  removeEventListeners() {}
 }

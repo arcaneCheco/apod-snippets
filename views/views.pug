@@ -1,7 +1,7 @@
 block variables
 
 doctype html
-html(lang="en")
+html(class=isDesktop ? "desktop" : isTablet ? "tablet" : isPhone ? "phone" : "" lang="en")
   head
     meta(charset="UTF-8")
     meta(http-equiv="X-UA-Compatible", content="IE=edge")
@@ -19,10 +19,16 @@ html(lang="en")
     include ./pages/explore.pug
     each pod in pods
       include ./pages/detail.pug
+    include ./partials/navigation.pug
     include ./partials/footer.pug
+    include ./partials/icon.pug
+    include ./partials/overlay.pug
     #canvas
 
     script.
-      window.ASSETS = !{JSON.stringify(assets).replace(/<\//g, "<\\/")}
+      window.TEXTURE_ASSETS = !{JSON.stringify(textures).replace(/<\//g, "<\\/")}
 
-    script(src="/app/app.js")
+    //- script.
+    //-   window.SOUND_ASSETS = !{JSON.stringify(sounds).replace(/<\//g, "<\\/")}
+
+    script(type="module" src="/app/app.js")

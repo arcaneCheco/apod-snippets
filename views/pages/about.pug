@@ -1,12 +1,31 @@
 .about
   .about__wrapper
-    .about__section 
-      .about__section__title="Credits:"
-      .about__section__text="Title and descriptions provided by Astronomy Picture of the Day"
-    
-    .about__section 
-      .about__section__title="Contact:"
-      .about__section__text="sergio@azizi.dev or @checo172"
-
-    a.about__link(href="/")
-      span="return"
+    .about__content
+      .about__header=about.data.header
+      each item in about.data.content1
+        .about__section!=PrismicDOM.RichText.asHtml(item.section)
+        .about__section__break
+          svg.about__section__break__svg(viewBox="0 0 10 10" fill="none" preserveAspectRatio="none")
+            line(x1="0" y1="5" x2="10" y2="5" stroke="white")
+      .credits 
+        .credits__toggle 
+          .credits__toggle__text=about.data.credits_header
+        ul.about__credits__podlist
+          each pod in about.data.body
+            li.about__credits__podname=pod.primary.title
+              ul.about__credits__pod__data 
+                li.about__credits__pod__original
+                  a(href=pod.primary.originalentry.url)="original entry"
+                li.about__credits__pod__images=pod.primary.imagesheader
+                  ul.about__credits__pod__imagelist 
+                    each item in pod.items 
+                      li.about__credits__pod__image__item
+                        a(href=item.image.url)=item.artist
+            //- .about__section__break
+            //-   svg.about__section__break__svg(viewBox="0 0 10 10" fill="none" preserveAspectRatio="none")
+            //-     line(x1="0" y1="5" x2="10" y2="5" stroke="white")
+      .about__section__break
+        svg.about__section__break__svg(viewBox="0 0 10 10" fill="none" preserveAspectRatio="none")
+          line(x1="0" y1="5" x2="10" y2="5" stroke="white")
+      .about__link
+        p="< return to Previous Page"

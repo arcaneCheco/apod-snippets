@@ -1,47 +1,38 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { Scene, WebGLRenderer, PerspectiveCamera } from "three";
 
-import Background from "./Background";
 import Smoke from "./Smoke";
 import Trail from "./Trail";
-import ExploreDetailTransition from "./ExploreDetailTransition";
 import Home from "./Home";
 import About from "./About";
 import Explore from "./Explore";
 import Detail from "./Detail";
-
-interface Props {
-  template: string;
-  debug?: any;
-}
+import Particles from "./Particles";
 
 export default class Canvas {
   template: string;
-  scene;
-  renderer: THREE.WebGLRenderer;
+  container: HTMLDivElement = document.querySelector("#canvas")!;
+  scene = new Scene();
+  ratio = 0.8;
+  time = 0;
+  isDown = false;
+  renderer: WebGLRenderer;
+  camera: PerspectiveCamera;
   width: number;
   height: number;
-  container: HTMLDivElement;
-  camera: THREE.PerspectiveCamera;
-  background: Background;
   home: Home;
   about: About;
   explore: Explore;
   detail: Detail;
-  isDown: boolean;
   x;
   y;
   active: any;
-  controls: OrbitControls;
-  time;
-  exploreDetailTransition: any;
-  smoke: any;
-  debug: any;
-  trail: any;
-  constructor({ template, debug }: Props) {
+  smoke: Smoke;
+  trail: Trail;
+  particles: Particles;
+  isPreloaded: boolean = false;
+  templateRouteMap: any;
+  constructor({ template }: { template: string }) {
     this.template = template;
-    this.container = document.querySelector("#canvas")!;
-    this.scene = new THREE.Scene();
 
     this.x = {
       start: 0,
@@ -54,59 +45,39 @@ export default class Canvas {
       end: 0,
     };
 
-    this.time = 0;
-
-    debug && this.setDebug(debug);
+    this.templateRouteMap = {
+      "": this.home,
+      explore: this.explore,
+      about: this.about,
+      detail: this.detail,
+    };
 
     this.setRenderer();
     this.setCamera();
-    // this.onResize();
-    // this.setBackground();
-  }
-
-  setDebug(debug: any) {
-    this.debug = debug.addFolder({ title: "Canvas" });
   }
 
   setRenderer() {
-    this.renderer = new THREE.WebGLRenderer({ alpha: true });
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    this.renderer = new WebGLRenderer({
+      alpha: false,
+      powerPreference: "high-performance",
+    });
+    this.renderer.setPixelRatio(1);
     this.container.appendChild(this.renderer.domElement);
   }
 
   setCamera() {
-    this.camera = new THREE.PerspectiveCamera(65, 2, 200, 1500);
+    this.camera = new PerspectiveCamera(65, 2, 2, 3500);
     this.camera.position.z = 500;
-
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-  }
-
-  setBackground() {
-    this.background = new Background({
-      scene: this.scene,
-      width: this.width,
-      height: this.height,
-    });
   }
 
   setTrail() {
     this.trail = new Trail({
       width: this.width,
       height: this.height,
-      scene: this.scene,
       renderer: this.renderer,
       camera: this.camera,
+      ratio: this.ratio,
     });
-    // const mesh = new THREE.Mesh(
-    //   new THREE.PlaneGeometry(1, 1),
-    //   new THREE.MeshBasicMaterial({
-    //     map: this.trail.texture,
-    //     transparent: true,
-    //     color: 0xff0000,
-    //   })
-    // );
-    // mesh.scale.set(this.width, this.height, 1);
-    // this.scene.add(mesh);
   }
 
   setSmoke() {
@@ -114,28 +85,30 @@ export default class Canvas {
       scene: this.scene,
       width: this.width,
       height: this.height,
-      debug: this.debug,
-      trail: this.trail ? this.trail.texture : null,
+      trail: this.trail.texture,
       fov: this.camera.fov,
       aspect: this.camera.aspect,
+      template: this.template,
+    });
+  }
+
+  setParticles() {
+    this.particles = new Particles({
+      scene: this.scene,
+      width: this.width,
+      height: this.height,
+      trail: this.trail.texture,
+      template: this.template,
     });
   }
 
   setHome() {
-    this.home = new Home({
-      scene: this.scene,
-      width: this.width,
-      height: this.height,
-    });
+    this.home = new Home();
+    this.active = this.home;
   }
 
   setAbout() {
-    this.about = new About({
-      scene: this.scene,
-      width: this.width,
-      height: this.height,
-      renderer: this.renderer,
-    });
+    this.about = new About();
   }
 
   setExplore() {
@@ -143,6 +116,11 @@ export default class Canvas {
       scene: this.scene,
       width: this.width,
       height: this.height,
+    });
+
+    this.explore.on("toDetail", (horizontalPosition, depth) => {
+      this.detail.transitionStartPosition = horizontalPosition;
+      this.detail.transitionStartPositionDepth = depth;
     });
   }
 
@@ -152,149 +130,117 @@ export default class Canvas {
       width: this.width,
       height: this.height,
       template: this.template,
+      camera: this.camera,
     });
-  }
-
-  setExploreDetailTransition() {
-    this.exploreDetailTransition = new ExploreDetailTransition({
-      scene: this.scene,
-      detail: this.detail,
-      explore: this.explore,
+    this.detail.on("leavingDetail", (texture, podIndex) => {
+      this.explore.podTexture = texture;
+      this.explore.activePodIndex = podIndex;
     });
   }
 
   onPreloaded() {
     this.setTrail();
     this.setSmoke();
+    this.setParticles();
     this.setHome();
     this.setAbout();
     this.setExplore();
     this.setDetail();
-    this.setExploreDetailTransition();
 
     this.onChange(this.template);
+
+    this.isPreloaded = true;
   }
 
-  onChange(template: string) {
+  async onChange(template: string) {
+    this.active.hide(template);
+
+    this.particles && this.particles.onChange(template);
+    this.smoke && this.smoke.onChange(template, this.isPreloaded);
+    this.trail && this.trail.onChange(template);
+
     if (template === "/") {
       this.home.show();
       this.active = this.home;
-    } else {
-      this.home.hide();
-    }
-
-    if (template === "/about") {
+    } else if (template === "/about") {
       this.about.show();
       this.active = this.about;
-    } else {
-      this.about.hide();
-    }
-
-    if (template === "/explore") {
-      if (this.template.includes("/detail/")) {
-        console.log("transition from detail to explore");
-        this.exploreDetailTransition.detailToExplore();
-      }
-      this.explore.show();
+    } else if (template === "/explore") {
+      this.explore.show(this.template);
       this.active = this.explore;
     } else {
-      this.explore.hide();
-    }
-
-    if (template.includes("/detail/")) {
-      if (this.template === "/explore") {
-        console.log("transition from explore to detail");
-        this.exploreDetailTransition.exploreToDetail();
-      }
-      this.detail.show(template);
+      this.detail.show({ from: this.template, to: template, time: this.time });
       this.active = this.detail;
-    } else {
-      this.detail.hide();
     }
 
     this.template = template;
   }
 
-  onResize() {
+  onResize(transition?: boolean) {
     this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight;
-
+    this.height = this.container.offsetHeight * this.ratio;
     this.renderer.setSize(this.width, this.height);
-
     this.camera.fov = (360 / Math.PI) * Math.atan(this.height * 0.001);
     this.camera.aspect = this.width / this.height;
     this.camera.updateProjectionMatrix();
 
-    this.active &&
-      this.active.onResize({ width: this.width, height: this.height });
+    this.trail.onResize({
+      width: this.width,
+      height: this.height,
+      ratio: this.ratio,
+    });
+
+    this.particles.onResize({ width: this.width, height: this.height });
+
+    this.smoke.onResize({ camera: this.camera });
+
+    !transition &&
+      this.detail.onResize({ width: this.width, height: this.height });
+    !transition &&
+      this.explore.onResize({ width: this.width, height: this.height });
   }
 
-  onWheel(event: any) {
-    this.active.onWheel(event);
+  onWheel(scroll: number) {
+    this.template === "/explore" && this.explore.onWheel(scroll);
   }
 
-  onTouchDown(event: any) {
-    this.isDown = true;
+  onTouchDown({ x, y }: { x: number; y: number }) {
+    this.active === this.explore && this.explore.onTouchDown({ x, y });
 
-    this.x.start = event.touches ? event.touches[0].clientX : event.clientX;
-    this.y.start = event.touches ? event.touches[0].clientY : event.clientY;
-
-    const values = {
-      x: this.x,
-      y: this.y,
-    };
-
-    if (this.explore) {
-      this.explore.onTouchDown(values);
-    }
+    this.active == this.detail && this.detail.onTouchDown({ x, y });
   }
 
-  onTouchMove(event: any) {
-    this.x.end = event.touches ? event.touches[0].clientX : event.clientX;
-    this.y.end = event.touches ? event.touches[0].clientY : event.clientY;
+  onTouchMove({ x, y, isDown }: { x: number; y: number; isDown: boolean }) {
+    this.active === this.explore &&
+      isDown &&
+      this.explore.onTouchMove({ x, y });
 
-    const values = {
-      x: this.x,
-      y: this.y,
-      idDown: this.isDown,
-    };
+    this.active === this.detail &&
+      this.detail.onTouchMove({
+        x,
+        y,
+      });
 
-    this.active && this.active.onTouchMove(values);
+    this.trail.onTouchMove({ x, y });
 
-    this.trail && this.trail.onTouchMove(values);
-
-    this.smoke && this.smoke.onTouchMove(values);
+    this.particles.onTouchMove({ x, y });
   }
 
-  onTouchUp(event: any) {
-    this.isDown = false;
-
-    this.x.end = event.changedTouches
-      ? event.changedTouches[0].clientX
-      : event.clientX;
-    this.y.end = event.changedTouches
-      ? event.changedTouches[0].clientY
-      : event.clientY;
-
-    const values = {
-      x: this.x,
-      y: this.y,
-    };
-
-    if (this.explore === this.active) {
-      this.explore.onTouchUp(values);
-    }
+  onTouchUp({ x, y }: { x: number; y: number }) {
+    this.active === this.explore && this.explore.onTouchUp();
+    this.active === this.detail && this.detail.onTouchUp({ x, y });
   }
 
-  update() {
+  update(scroll: number) {
     this.time += 0.01633;
 
-    this.active && this.active.update({ time: this.time });
+    this.active === this.explore && this.explore.update(this.time);
+    this.active === this.detail &&
+      this.detail.update({ time: this.time, scroll: scroll });
 
-    // this.background.update(this.time);
-    this.smoke && this.smoke.update(0.01633, this.time);
-    this.trail && this.trail.update(this.time);
-    // this.active === this.home && this.trail && this.trail.update(this.time);
+    this.smoke.update(this.time);
+    this.trail.update();
+    this.particles.update(this.time);
 
     this.renderer.render(this.scene, this.camera);
   }

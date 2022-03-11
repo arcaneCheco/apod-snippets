@@ -1,0 +1,77 @@
+.footer {
+  @extend %cover;
+  z-index: z("footer");
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.footer__wrapper {
+  height: 80%;
+  width: 100%;
+  display: flex;
+}
+
+.footer__icons {
+  height: 5rem;
+  padding: 1rem;
+  width: 100%;
+  @include media("<phone") {
+    height: 4rem;
+  }
+  display: flex;
+  pointer-events: all;
+  gap: 1rem;
+  position: absolute;
+  bottom: 10vh;
+}
+
+.footer__social {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.footer__social__toggle {
+  position: absolute;
+  height: 100%;
+  right: 0;
+  & > svg {
+    height: 100%;
+  }
+  z-index: 1;
+}
+
+.footer__social_icons {
+  height: 100%;
+  position: absolute;
+  display: flex;
+  gap: 1rem;
+  right: 4rem;
+  overflow: hidden;
+  // opacity: 0;
+  transform: translateX(7rem);
+}
+
+.footer__link {
+  & > svg {
+    height: 100%;
+    width: auto;
+  }
+}
+
+.footer__sound {
+  height: 100%;
+  border: 1px solid #0000004d;
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+  & > svg {
+    height: 100%;
+    // width: 80%;
+  }
+}

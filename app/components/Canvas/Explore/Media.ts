@@ -1,134 +1,90 @@
-import * as THREE from "three";
-import { Pane } from "tweakpane";
+import {
+  CompressedTexture,
+  Group,
+  PlaneGeometry,
+  ShaderMaterial,
+  Mesh,
+} from "three";
 
+import GSAP from "gsap";
 import vertexShader from "../../../shaders/explore/vertex.glsl";
 import fragmentShader from "../../../shaders/explore/fragment.glsl";
 
-interface Props {
-  element: Element;
-  geometry: THREE.PlaneGeometry;
-  index: number;
-  scene: THREE.Group;
-  mediaBounds: {
-    width: number;
-    height: number;
-    gap: number;
-  };
-  displacementMap: any;
-}
-
 export default class Media {
-  element;
-  geometry;
-  index;
-  scene;
-  material: THREE.ShaderMaterial;
-  mesh: THREE.Mesh;
-  texture: THREE.Texture;
-  extra;
-  initialPosition;
-  mediaBounds;
-  textureLoader;
-  displacementMap;
-  constructor({
-    element,
-    geometry,
-    index,
-    scene,
-    mediaBounds,
-    displacementMap,
-  }: Props) {
-    this.element = element;
-    this.geometry = geometry;
-    this.index = index;
-    this.scene = scene;
-    this.extra = 0;
-    this.initialPosition = 0;
-    this.mediaBounds = mediaBounds;
-    this.textureLoader = new THREE.TextureLoader();
-    this.displacementMap = displacementMap;
+  texture: CompressedTexture;
+  snippetIndex: number;
+  geometry: PlaneGeometry;
+  position: number;
+  scene: Group;
+  extra = 0;
+  initialPosition = 0;
+  material: ShaderMaterial;
+  mesh: Mesh;
+  galleryWidth: number;
+  upperBound: number;
+  lowerBound: number;
+  displacementLeftTexture = window.TEXTURES.displ;
+  displacementRightTexture = window.TEXTURES.displ2;
+  constructor({ element, geometry, position, scene }: any) {
+    this.texture =
+      window.TEXTURES[element.querySelector("img")!.getAttribute("data-src")!];
+    this.snippetIndex = Number(element.getAttribute("data-index")!);
 
-    this.setTexture();
+    this.geometry = geometry;
+    this.position = position;
+    this.scene = scene;
+
     this.setMaterial();
     this.setMesh();
-    this.updateScale();
-    this.updateX();
-  }
-
-  setTexture() {
-    const image = this.element.querySelector("img")!;
-    this.texture = window.TEXTURES[image.getAttribute("data-src")!];
   }
 
   setMaterial() {
-    this.material = new THREE.ShaderMaterial({
+    this.material = new ShaderMaterial({
       vertexShader,
       fragmentShader,
       uniforms: {
         uTexture: { value: this.texture },
         uTime: { value: 0 },
         uSpeed: { value: 0 },
-        uAdjusting: { value: 0 },
+        uOpacity: { value: 1 },
         uDirection: { value: 0 },
+        uTransition: { value: 1 },
         uDisplacementMap: {
-          value: this.textureLoader.load(this.displacementMap),
+          value: this.displacementLeftTexture,
         },
-        uProgress: { value: 0 },
+        uScale: { value: 1 },
+        uZ: { value: 0 },
+        uIndex: { value: this.position },
+        uDisplacementMap2: {
+          value: this.displacementRightTexture,
+        },
       },
       transparent: true,
-      // wireframe: true,
     });
-    // const pane = new Pane();
-    // pane.addInput(this.material.uniforms.uProgress, "value", {
-    //   min: 0,
-    //   max: 1,
-    //   step: 0.05,
-    // });
-    // pane.containerElem_.style.zIndex = "100";
   }
 
   setMesh() {
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.scene.add(this.mesh);
   }
 
-  onResize({ mediaBounds }: any) {
+  onResize({ galleryWidth, upperBound, lowerBound, scale, unitSize }: any) {
     this.extra = 0;
-    this.mediaBounds = mediaBounds;
-    this.updateScale();
-    this.updateX();
-  }
+    this.galleryWidth = galleryWidth;
+    this.upperBound = upperBound;
+    this.lowerBound = lowerBound;
 
-  onWheel() {}
-
-  updateScale() {
-    this.mesh.scale.x = this.mediaBounds.width;
-    this.mesh.scale.y = this.mediaBounds.height;
-  }
-
-  updateX() {
-    this.initialPosition =
-      this.index * this.mediaBounds.width + this.index * this.mediaBounds.gap;
+    this.mesh.scale.x = this.mesh.scale.y = scale;
+    this.initialPosition = this.position * unitSize;
     this.mesh.position.x = this.initialPosition;
   }
 
-  updateY() {
-    // this.mesh.position.y =
-    //   this.height / 2 - this.bounds.height / 2 - this.bounds.top;
-  }
-
-  update({ scroll, galleryWidth }: any) {
+  update({ scroll }: { scroll: number }) {
     this.mesh.position.x = this.initialPosition - scroll + this.extra;
-    if (
-      this.mesh.position.x >
-      galleryWidth - this.mediaBounds.width / 2 - this.mediaBounds.gap / 2
-    ) {
-      this.extra -= galleryWidth;
-    } else if (
-      this.mesh.position.x <
-      -this.mediaBounds.width / 2 - this.mediaBounds.gap / 2
-    ) {
-      this.extra += galleryWidth;
+    if (this.mesh.position.x > this.upperBound) {
+      this.extra -= this.galleryWidth;
+    } else if (this.mesh.position.x < this.lowerBound) {
+      this.extra += this.galleryWidth;
     }
   }
 }

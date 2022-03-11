@@ -1,21 +1,18 @@
 uniform float uTime;
-uniform float uSpeed;
-uniform float uAdjusting;
-uniform float uDirection;
+uniform float uScale;
+uniform float uIndex;
+uniform float uTransition;
 
 varying vec2 vUv;
 
 void main() {
     vec3 pos = position;
-    // pos.x += sin(uv.y * 3.14 * 6.) * 0.1 * uSpeed;
 
-    // pos.y *= 1. - uSpeed * 0.3 * (1. - uAdjusting);
+    pos *= uScale;
 
     float dist = distance(uv, vec2(0.5));
-    pos.z += 20. * sin(dist * 10. + uTime);
-
-    // pos.z -= 150. * (sin((pos.x) * 3.14 + 3.14 * 0.5) + sin((pos.y) * 3.14 + 3.14 * 0.5)) * uSpeed * uDirection - 150.*uDirection*uSpeed*2.; // +600.;
-
+    float wave = sin(dist * (10.+uIndex*2.) + uTime*1.5 + 3.1415 * uIndex) * uTransition;
+    pos.z += 6. * wave;
 
     gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);
     vUv = uv;
