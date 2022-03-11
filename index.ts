@@ -14,7 +14,7 @@ const UAParser = require("ua-parser-js");
 const app = express();
 const PORT = 3000;
 
-app.use(express.static(`${__dirname}/dist`));
+app.use(express.static(`${__dirname}/public`));
 
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
