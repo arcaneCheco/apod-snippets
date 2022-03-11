@@ -2,7 +2,9 @@
   "name": "apod-simple",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "dev": "npx nodemon ./index.ts"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
