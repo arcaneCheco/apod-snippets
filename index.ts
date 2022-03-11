@@ -15,10 +15,10 @@ const app = express();
 const PORT = 3000;
 
 //_dirname
-app.use(express.static(`${process.cwd()}/public`));
+// app.use(express.static(`${process.cwd()}/public`));
 
 app.set("view engine", "pug");
-app.set("views", `${process.cwd()}/views`);
+app.set("views", `${__dirname}/views`);
 
 // const initApi = (req: Request) => {
 const initApi = (req: any) => {
