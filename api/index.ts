@@ -14,10 +14,11 @@ const UAParser = require("ua-parser-js");
 const app = express();
 const PORT = 3000;
 
-app.use(express.static(`${__dirname}/public`));
+//_dirname
+// app.use(express.static(`${process.cwd()}/public`));
 
 app.set("view engine", "pug");
-app.set("views", `${__dirname}/views`);
+app.set("views", `${process.cwd()}/views`);
 
 // const initApi = (req: Request) => {
 const initApi = (req: any) => {
