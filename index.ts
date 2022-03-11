@@ -15,7 +15,7 @@ const app = express();
 const PORT = 3000;
 
 //_dirname
-app.use(express.static(`${process.cwd()}/dist`));
+app.use(express.static(`${__dirname}/dist`));
 
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
