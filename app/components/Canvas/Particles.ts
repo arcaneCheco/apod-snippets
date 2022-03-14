@@ -220,7 +220,7 @@ export default class Particles extends EventEmitter {
           duration: 1.5,
         });
       }
-    } else if (template === "/explore") {
+    } else if (template === "/snippets") {
       this.mesh.visible = true;
       if (this.material) {
         GSAP.to(this.material.uniforms.uProgress, {

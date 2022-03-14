@@ -145,7 +145,7 @@ table {
   7. Width (px)
   8. Height (px)
 */
-.explore__wrapper, .home__wrapper, .navigation__list__wrapper, .navigation__wrapper, .navigation, .footer, .icon, .preloader__wrapper, .preloader, .overlay, html, .detail, .explore, .about, .home {
+.snippets__wrapper, .home__wrapper, .navigation__list__wrapper, .navigation__wrapper, .navigation, .footer, .icon, .preloader__wrapper, .preloader, .overlay, html, .detail, .snippets, .about, .home {
   position: absolute;
   top: 0;
   left: 0;
@@ -153,18 +153,18 @@ table {
   height: 100%;
 }
 
-.explore__wrapper, .home__wrapper, .home, .icon, .preloader__wrapper, .preloader {
+.snippets__wrapper, .home__wrapper, .home, .icon, .preloader__wrapper, .preloader {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.detail, .explore, .about, .home {
+.detail, .snippets, .about, .home {
   opacity: 0;
   visibility: hidden;
 }
 
-.detail--active, .explore--active, .about--active, .home--active {
+.detail--active, .snippets--active, .about--active, .home--active {
   z-index: 2;
   opacity: 1;
   visibility: visible;
@@ -711,11 +711,11 @@ html {
   cursor: pointer;
 }
 
-.explore__wrapper {
+.snippets__wrapper {
   overflow: hidden;
 }
 
-.explore__gallery {
+.snippets__gallery {
   position: absolute;
   width: 28vw;
   height: 28vw;
@@ -725,7 +725,7 @@ html {
   min-height: calc(var(--vh) * 28);
 }
 @media (max-width: 767px) {
-  .explore__gallery {
+  .snippets__gallery {
     width: 45vw;
     height: 45vw;
     max-width: calc(var(--vh) * 80);
@@ -733,18 +733,18 @@ html {
   }
 }
 
-.explore__gap {
+.snippets__gap {
   width: 2vw;
   height: 2vw;
 }
 @media (max-width: 767px) {
-  .explore__gap {
+  .snippets__gap {
     width: 1vw;
     height: 0.5vw;
   }
 }
 
-.explore__gallery__link {
+.snippets__gallery__link {
   display: block;
   position: absolute;
   margin: auto;
@@ -752,21 +752,21 @@ html {
   height: 100%;
   -webkit-user-drag: none;
 }
-.explore__gallery__link--active {
+.snippets__gallery__link--active {
   z-index: 100;
 }
-.explore__gallery__link--dragging {
+.snippets__gallery__link--dragging {
   pointer-events: none;
 }
 
-.explore__gallery__media {
+.snippets__gallery__media {
   width: 100%;
   height: 100%;
   position: relative;
   visibility: hidden;
 }
 
-.explore__titles {
+.snippets__titles {
   position: absolute;
   font-size: 5rem;
   left: 50%;
@@ -775,7 +775,7 @@ html {
   white-space: nowrap;
 }
 
-.explore__titles__item {
+.snippets__titles__item {
   display: inline-block;
 }
 

@@ -125,10 +125,10 @@ export default class Icon extends Component {
       });
       GSAP.set(this.elements.link, {
         attr: {
-          href: "/explore",
+          href: "/snippets",
         },
       });
-    } else if (template === "/explore") {
+    } else if (template === "/snippets") {
       this.elements.link.style.pointerEvents = "all";
       GSAP.set(this.elements.wrapper, {
         opacity: 1,
@@ -171,7 +171,7 @@ export default class Icon extends Component {
           opacity: 0,
           duration: 1,
         });
-      } else if (this.template === "/explore") {
+      } else if (this.template === "/snippets") {
         GSAP.to(this.elements.svg, {
           transform: "translateY(8rem)",
           duration: 1,

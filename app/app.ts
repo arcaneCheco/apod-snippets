@@ -7,7 +7,7 @@ import Assets from "./classes/Assets";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Explore from "./pages/Explore";
+import Snippets from "./pages/Snippets";
 import Detail from "./pages/Detail";
 import Preloader from "./components/Preloader";
 import Icon from "./components/Icon";
@@ -25,11 +25,6 @@ import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 // file names on prismic
 // add better icon on nav overlay
 // change routing names
-// close button on pod page DONE
-// remove mavIconEnter and IconEnter sounds on mobile DONE
-// make orbit control faster/more sensitive DONE
-// home screen background add more color DONE
-// add trail back on mobile for other pages DONE
 // DONE
 
 import Sound from "./components/Sound";
@@ -39,10 +34,10 @@ class App {
   canvas: Canvas;
   home: Home;
   about: About;
-  explore: Explore;
+  snippets: Snippets;
   detail: Detail;
   pages: { [key: string]: Page };
-  page: Home | About | Explore | Detail;
+  page: Home | About | Snippets | Detail;
   assets: Assets;
   preloader: Preloader;
   icon: Icon;
@@ -153,12 +148,12 @@ class App {
   setPages() {
     this.home = new Home();
     this.about = new About();
-    this.explore = new Explore();
+    this.snippets = new Snippets();
 
     this.pages = {
       "/": this.home,
       "/about": this.about,
-      "/explore": this.explore,
+      "/snippets": this.snippets,
     };
 
     const detailElements = document.querySelectorAll(".detail");
@@ -220,7 +215,7 @@ class App {
     }
 
     this.canvas.particles.on("goToEplore", () => {
-      this.onChange({ url: "/explore" });
+      this.onChange({ url: "/snippets" });
     });
     this.canvas.detail.on("enterFullscreen", () => {
       this.page instanceof Detail && this.page.onEnterFullscreen();

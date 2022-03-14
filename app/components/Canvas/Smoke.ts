@@ -153,7 +153,7 @@ export default class Smoke {
         });
       }
     }
-    if (template === "/explore") {
+    if (template === "/snippets") {
       GSAP.to(this.material.uniforms.uMultiplier, {
         value: 1,
         duration: 1.5,

@@ -1,8 +1,0 @@
-.explore 
-  .explore__wrapper 
-    .explore__gallery 
-      each snippet in snippets.data.snippets 
-        a.explore__gallery__link(href=`/detail/${snippet.pod.uid}` data-index=snippet.pod.data.index)
-          figure.explore__gallery__media 
-            img.explore__gallery__media__image(alt=snippet.media.name data-src=snippet.media.name)
-    .explore__gap

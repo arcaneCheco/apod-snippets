@@ -6,9 +6,8 @@ import {
   Mesh,
 } from "three";
 
-import GSAP from "gsap";
-import vertexShader from "../../../shaders/explore/vertex.glsl";
-import fragmentShader from "../../../shaders/explore/fragment.glsl";
+import vertexShader from "../../../shaders/snippets/vertex.glsl";
+import fragmentShader from "../../../shaders/snippets/fragment.glsl";
 
 export default class Media {
   texture: CompressedTexture;

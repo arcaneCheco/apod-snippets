@@ -1,14 +1,14 @@
 import Page from "../../classes/Page";
 
-export default class Explore extends Page {
+export default class Snippets extends Page {
   constructor() {
     super({
       classes: {
-        active: "explore--active",
+        active: "snippets--active",
       },
-      element: ".explore",
+      element: ".snippets",
       elements: {
-        wrapper: ".explore__wrapper",
+        wrapper: ".snippets__wrapper",
       },
       isScrollable: false,
     });

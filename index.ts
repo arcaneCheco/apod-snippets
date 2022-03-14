@@ -105,7 +105,7 @@ app.get("/about", async (req: any, res: any) => {
   });
 });
 
-app.get("/explore", async (req: any, res: any) => {
+app.get("/snippets", async (req: any, res: any) => {
   const api = await initApi(req);
   const defaults = await handleRequest(api);
   res.render("views", {

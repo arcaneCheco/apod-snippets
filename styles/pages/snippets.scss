@@ -1,4 +1,4 @@
-.explore {
+.snippets {
   @extend %page;
 
   &--active {
@@ -6,13 +6,13 @@
   }
 }
 
-.explore__wrapper {
+.snippets__wrapper {
   @extend %cover;
   overflow: hidden;
   @extend %center;
 }
 
-.explore__gallery {
+.snippets__gallery {
   position: absolute;
   width: 28vw;
   height: 28vw;
@@ -28,7 +28,7 @@
   }
 }
 
-.explore__gap {
+.snippets__gap {
   width: 2vw;
   height: 2vw;
   @include media("<phone") {
@@ -37,7 +37,7 @@
   }
 }
 
-.explore__gallery__link {
+.snippets__gallery__link {
   display: block;
   position: absolute;
   margin: auto;
@@ -54,14 +54,14 @@
   }
 }
 
-.explore__gallery__media {
+.snippets__gallery__media {
   width: 100%;
   height: 100%;
   position: relative;
   visibility: hidden;
 }
 
-.explore__titles {
+.snippets__titles {
   position: absolute;
   font-size: 5rem;
   left: 50%;
@@ -71,6 +71,6 @@
   white-space: nowrap;
 }
 
-.explore__titles__item {
+.snippets__titles__item {
   display: inline-block;
 }

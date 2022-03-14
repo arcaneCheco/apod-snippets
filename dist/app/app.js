@@ -33225,7 +33225,7 @@ class $83e3100a08413060$export$2e2bcd8739ae039 {
                 });
             }
         }
-        if (template === "/explore") {
+        if (template === "/snippets") {
             $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uMultiplier, {
                 value: 1,
                 duration: 1.5
@@ -33520,15 +33520,15 @@ function $95b9742290dc9865$export$ef2201424fe649f7(q, a, b, c, order) {
 
 
 
-var $46846ee45424e1e8$exports = {};
-$46846ee45424e1e8$exports = "#define GLSLIFY 1\nuniform float uTime;\nuniform float uScale;\nuniform float uIndex;\nuniform float uTransition;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec3 pos = position;\n\n    pos *= uScale;\n\n    float dist = distance(uv, vec2(0.5));\n    float wave = sin(dist * (10.+uIndex*2.) + uTime*1.5 + 3.1415 * uIndex) * uTransition;\n    pos.z += 6. * wave;\n\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);\n    vUv = uv;\n}";
+var $0a7160e2bec6e48d$exports = {};
+$0a7160e2bec6e48d$exports = "#define GLSLIFY 1\nuniform float uTime;\nuniform float uScale;\nuniform float uIndex;\nuniform float uTransition;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec3 pos = position;\n\n    pos *= uScale;\n\n    float dist = distance(uv, vec2(0.5));\n    float wave = sin(dist * (10.+uIndex*2.) + uTime*1.5 + 3.1415 * uIndex) * uTransition;\n    pos.z += 6. * wave;\n\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);\n    vUv = uv;\n}";
 
 
-var $f1fd11e06b6dd9bb$exports = {};
-$f1fd11e06b6dd9bb$exports = "#define GLSLIFY 1\nuniform sampler2D uTexture;\nuniform sampler2D uDisplacementMap;\nuniform sampler2D uDisplacementMap2;\nuniform float uSpeed;\nuniform float uDirection;\nuniform float uTransition;\nuniform float uOpacity;\nuniform float uZ;\n\nvarying vec2 vUv;\n\nvoid main() {\n    float dR = texture2D(uDisplacementMap, vUv).r;\n    float dL = texture2D(uDisplacementMap2, vUv).r;\n    vec2 dUv = vUv;\n    dUv.x = mix(vUv.x, dR * uDirection + (1.-uDirection) * (1. - dL), abs(uSpeed) * 4.5);\n\n    vec4 image = texture2D(uTexture, dUv);\n    vec3 colorDistortion = vec3(texture2D(uTexture, dUv + vec2(0.12*uSpeed, 0.)).r, texture2D(uTexture, dUv + vec2(0.34*uSpeed, 0.)).g, texture2D(uTexture, dUv + vec2(0.56*uSpeed, 0.)).b);\n    image.rgb = mix(image.rgb, colorDistortion, uTransition);\n\n    float gray = 0.21 * image.r + 0.71 * image.g + 0.07 * image.b;\n\n    vec4 notCurrent = vec4(vec3(gray), 0.6);\n\n    gl_FragColor =  mix(notCurrent, image, 1. - abs(uZ));\n    gl_FragColor.a *= uOpacity;\n    \n\n}";
+var $277bb2c4618ced5f$exports = {};
+$277bb2c4618ced5f$exports = "#define GLSLIFY 1\nuniform sampler2D uTexture;\nuniform sampler2D uDisplacementMap;\nuniform sampler2D uDisplacementMap2;\nuniform float uSpeed;\nuniform float uDirection;\nuniform float uTransition;\nuniform float uOpacity;\nuniform float uZ;\n\nvarying vec2 vUv;\n\nvoid main() {\n    float dR = texture2D(uDisplacementMap, vUv).r;\n    float dL = texture2D(uDisplacementMap2, vUv).r;\n    vec2 dUv = vUv;\n    dUv.x = mix(vUv.x, dR * uDirection + (1.-uDirection) * (1. - dL), abs(uSpeed) * 4.5);\n\n    vec4 image = texture2D(uTexture, dUv);\n    vec3 colorDistortion = vec3(texture2D(uTexture, dUv + vec2(0.12*uSpeed, 0.)).r, texture2D(uTexture, dUv + vec2(0.34*uSpeed, 0.)).g, texture2D(uTexture, dUv + vec2(0.56*uSpeed, 0.)).b);\n    image.rgb = mix(image.rgb, colorDistortion, uTransition);\n\n    float gray = 0.21 * image.r + 0.71 * image.g + 0.07 * image.b;\n\n    vec4 notCurrent = vec4(vec3(gray), 0.6);\n\n    gl_FragColor =  mix(notCurrent, image, 1. - abs(uZ));\n    gl_FragColor.a *= uOpacity;\n    \n\n}";
 
 
-class $65e342e9325de4a6$export$2e2bcd8739ae039 {
+class $6172e5b48d8b8161$export$2e2bcd8739ae039 {
     constructor({ element: element , geometry: geometry , position: position , scene: scene  }){
         this.extra = 0;
         this.initialPosition = 0;
@@ -33544,8 +33544,8 @@ class $65e342e9325de4a6$export$2e2bcd8739ae039 {
     }
     setMaterial() {
         this.material = new $2d9d8c9fc2282acc$export$83c7d75d550a8b0d({
-            vertexShader: (/*@__PURE__*/$parcel$interopDefault($46846ee45424e1e8$exports)),
-            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($f1fd11e06b6dd9bb$exports)),
+            vertexShader: (/*@__PURE__*/$parcel$interopDefault($0a7160e2bec6e48d$exports)),
+            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($277bb2c4618ced5f$exports)),
             uniforms: {
                 uTexture: {
                     value: this.texture
@@ -33962,19 +33962,19 @@ function $ef35f6280e8cf2f8$var$eventTargetAgnosticAddListener(emitter, name, lis
 }
 
 
-class $6deb193706b059e5$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$interopDefault($ef35f6280e8cf2f8$exports)) {
+class $a34760a1451bfed6$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$interopDefault($ef35f6280e8cf2f8$exports)) {
     constructor({ scene: scene , width: width , height: height  }){
         super();
         this.group = new $2d9d8c9fc2282acc$export$eb2fcfdbd7ba97d4();
         this.index = 4;
-        this.galleryElement = document.querySelector(".explore__gallery");
-        this.gap = document.querySelector(".explore__gap");
+        this.galleryElement = document.querySelector(".snippets__gallery");
+        this.gap = document.querySelector(".snippets__gap");
         this.mediaSize = 0;
         this.gapSize = 0;
         this.unitSize = 0;
         this.zMagnitude = 0;
         this.galleryWidth = 0;
-        this.mediaElements = document.querySelectorAll(".explore__gallery__media");
+        this.mediaElements = document.querySelectorAll(".snippets__gallery__media");
         this.scroll = {
             ease: 0.07,
             current: 0,
@@ -33991,7 +33991,7 @@ class $6deb193706b059e5$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         this.scene = scene;
         this.width = width;
         this.height = height;
-        this.mediaLinks = this.galleryElement.querySelectorAll(".explore__gallery__link");
+        this.mediaLinks = this.galleryElement.querySelectorAll(".snippets__gallery__link");
         this.numMedias = this.mediaLinks.length;
         this.setGallery();
         this.onResize({
@@ -34003,7 +34003,7 @@ class $6deb193706b059e5$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         this.medias = [
             ...this.mediaLinks
         ].map((element, index)=>{
-            const media = new $65e342e9325de4a6$export$2e2bcd8739ae039({
+            const media = new $6172e5b48d8b8161$export$2e2bcd8739ae039({
                 element: element,
                 geometry: this.geometry,
                 position: index,
@@ -34152,20 +34152,20 @@ class $6deb193706b059e5$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
     }
     onTouchMove({ x: x , y: y  }) {
         const distance = this.touchStart - x;
-        if (Math.abs(distance) > 1) this.mediaLinks[this.index].classList.add("explore__gallery__link--dragging");
+        if (Math.abs(distance) > 1) this.mediaLinks[this.index].classList.add("snippets__gallery__link--dragging");
         this.scroll.target = this.scroll.start + distance * 3;
     }
     onTouchUp() {
-        this.mediaLinks.forEach((element)=>element.classList.remove("explore__gallery__link--dragging")
+        this.mediaLinks.forEach((element)=>element.classList.remove("snippets__gallery__link--dragging")
         );
     }
     updateIndex(center) {
         let index = (center + 2) % 5;
         if (index < 0) index += 5;
         if (this.index !== index) {
-            this.mediaLinks[this.index].classList.remove("explore__gallery__link--active");
+            this.mediaLinks[this.index].classList.remove("snippets__gallery__link--active");
             this.index = index;
-            this.mediaLinks[this.index].classList.add("explore__gallery__link--active");
+            this.mediaLinks[this.index].classList.add("snippets__gallery__link--active");
         }
     }
     update(time) {
@@ -34602,7 +34602,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         this.materials = [];
         this.touchStart = new $2d9d8c9fc2282acc$export$c977b3e384af9ae1();
         this.orbitControlEnabled = false;
-        this.snippetRefElement = document.querySelector(".explore__gallery");
+        this.snippetRefElement = document.querySelector(".snippets__gallery");
         this.scene = scene;
         this.template = template;
         this.camera = camera;
@@ -34619,7 +34619,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
             height: this.height
         });
     }
-    fromExploreTransition(time) {
+    fromSnippetsTransition(time) {
         this.isTransitioning = true;
         this.group.rotation.set(0, 0, 0);
         this.materials.forEach((mat)=>{
@@ -34692,10 +34692,10 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         $980dae104ebd016a$export$99ee26438460406a.delayedCall(delay, ()=>{
             this.scene.add(this.group);
         });
-        if (from === "/explore") this.fromExploreTransition(time);
+        if (from === "/snippets") this.fromSnippetsTransition(time);
         else if (from === "/about") this.fromAboutTransition();
     }
-    toExploreTransition() {
+    toSnippetsTransition() {
         const targetScale = this.snippetRefElement.clientWidth;
         const duration = 1;
         $980dae104ebd016a$export$99ee26438460406a.to(this.group.scale, {
@@ -34737,7 +34737,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         this.orbitControlEnabled = false;
         this.exitFullscreen();
         this.emit("leavingDetail", this.active.textures[Math.max(this.active.scrollIndex - 1, 0)], this.active.index);
-        if (template === "/explore") this.toExploreTransition();
+        if (template === "/snippets") this.toSnippetsTransition();
         else this.scene.remove(this.group);
     }
     setGeometry() {
@@ -35219,7 +35219,7 @@ class $b890fba77e00c649$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
                     duration: 1.5
                 });
             }
-        } else if (template === "/explore") {
+        } else if (template === "/snippets") {
             this.mesh.visible = true;
             if (this.material) {
                 $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uProgress, {
@@ -35293,12 +35293,6 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             distance: 0,
             end: 0
         };
-        this.templateRouteMap = {
-            "": this.home,
-            explore: this.explore,
-            about: this.about,
-            detail: this.detail
-        };
         this.setRenderer();
         this.setCamera();
     }
@@ -35350,13 +35344,13 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
     setAbout() {
         this.about = new $36043e5593076086$export$2e2bcd8739ae039();
     }
-    setExplore() {
-        this.explore = new $6deb193706b059e5$export$2e2bcd8739ae039({
+    setSnippets() {
+        this.snippets = new $a34760a1451bfed6$export$2e2bcd8739ae039({
             scene: this.scene,
             width: this.width,
             height: this.height
         });
-        this.explore.on("toDetail", (horizontalPosition, depth)=>{
+        this.snippets.on("toDetail", (horizontalPosition, depth)=>{
             this.detail.transitionStartPosition = horizontalPosition;
             this.detail.transitionStartPositionDepth = depth;
         });
@@ -35370,8 +35364,8 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             camera: this.camera
         });
         this.detail.on("leavingDetail", (texture, podIndex)=>{
-            this.explore.podTexture = texture;
-            this.explore.activePodIndex = podIndex;
+            this.snippets.podTexture = texture;
+            this.snippets.activePodIndex = podIndex;
         });
     }
     onPreloaded() {
@@ -35380,7 +35374,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
         this.setParticles();
         this.setHome();
         this.setAbout();
-        this.setExplore();
+        this.setSnippets();
         this.setDetail();
         this.onChange(this.template);
     }
@@ -35395,9 +35389,9 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
         } else if (template === "/about") {
             this.about.show();
             this.active = this.about;
-        } else if (template === "/explore") {
-            this.explore.show(this.template);
-            this.active = this.explore;
+        } else if (template === "/snippets") {
+            this.snippets.show(this.template);
+            this.active = this.snippets;
         } else {
             this.detail.show({
                 from: this.template,
@@ -35433,16 +35427,16 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             width: this.width,
             height: this.height
         });
-        !transition && this.explore.onResize({
+        !transition && this.snippets.onResize({
             width: this.width,
             height: this.height
         });
     }
     onWheel(scroll) {
-        this.template === "/explore" && this.explore.onWheel(scroll);
+        this.template === "/snippets" && this.snippets.onWheel(scroll);
     }
     onTouchDown({ x: x , y: y  }) {
-        this.active === this.explore && this.explore.onTouchDown({
+        this.active === this.snippets && this.snippets.onTouchDown({
             x: x,
             y: y
         });
@@ -35452,7 +35446,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
         });
     }
     onTouchMove({ x: x , y: y , isDown: isDown  }) {
-        this.active === this.explore && isDown && this.explore.onTouchMove({
+        this.active === this.snippets && isDown && this.snippets.onTouchMove({
             x: x,
             y: y
         });
@@ -35470,7 +35464,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
         });
     }
     onTouchUp({ x: x , y: y  }) {
-        this.active === this.explore && this.explore.onTouchUp();
+        this.active === this.snippets && this.snippets.onTouchUp();
         this.active === this.detail && this.detail.onTouchUp({
             x: x,
             y: y
@@ -35478,7 +35472,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
     }
     update(scroll) {
         this.time += 0.01633;
-        this.active === this.explore && this.explore.update(this.time);
+        this.active === this.snippets && this.snippets.update(this.time);
         this.active === this.detail && this.detail.update({
             time: this.time,
             scroll: scroll
@@ -36225,15 +36219,15 @@ class $388f9f63da93d3ba$export$2e2bcd8739ae039 extends $6b1f20d622136982$export$
 
 
 
-class $003d1444f70f3aa4$export$2e2bcd8739ae039 extends $6b1f20d622136982$export$2e2bcd8739ae039 {
+class $d15d66e1ad4fc80d$export$2e2bcd8739ae039 extends $6b1f20d622136982$export$2e2bcd8739ae039 {
     constructor(){
         super({
             classes: {
-                active: "explore--active"
+                active: "snippets--active"
             },
-            element: ".explore",
+            element: ".snippets",
             elements: {
-                wrapper: ".explore__wrapper"
+                wrapper: ".snippets__wrapper"
             },
             isScrollable: false
         });
@@ -36564,10 +36558,10 @@ class $f0785bdb198e58ec$export$2e2bcd8739ae039 extends $ea0b881b56c5595f$export$
             });
             $980dae104ebd016a$export$99ee26438460406a.set(this.elements.link, {
                 attr: {
-                    href: "/explore"
+                    href: "/snippets"
                 }
             });
-        } else if (template === "/explore") {
+        } else if (template === "/snippets") {
             this.elements.link.style.pointerEvents = "all";
             $980dae104ebd016a$export$99ee26438460406a.set(this.elements.wrapper, {
                 opacity: 1,
@@ -36605,7 +36599,7 @@ class $f0785bdb198e58ec$export$2e2bcd8739ae039 extends $ea0b881b56c5595f$export$
                 opacity: 0,
                 duration: 1
             });
-            else if (this.template === "/explore") $980dae104ebd016a$export$99ee26438460406a.to(this.elements.svg, {
+            else if (this.template === "/snippets") $980dae104ebd016a$export$99ee26438460406a.to(this.elements.svg, {
                 transform: "translateY(8rem)",
                 duration: 1,
                 ease: "back.out(1.4)"
@@ -38885,19 +38879,19 @@ class $25c46615606f4f8d$export$2e2bcd8739ae039 {
     }
     onChange({ from: from , to: to  }) {
         if (this.isDisabled) return;
-        if (from === "/" && to === "/explore") {
+        if (from === "/" && to === "/snippets") {
             this.medias["homeToSnippets"].currentTime = 0;
             this.medias["homeToSnippets"].play();
         }
-        if (from === "/explore" && to === "/") {
+        if (from === "/snippets" && to === "/") {
             this.medias["snippetsToHome"].currentTime = 0;
             this.medias["snippetsToHome"].play();
         }
-        if (from === "/explore" && to.includes("/detail/")) {
+        if (from === "/snippets" && to.includes("/detail/")) {
             this.medias["openPod"].currentTime = 0;
             this.medias["openPod"].play();
         }
-        if (from.includes("/detail/") && to === "/explore") {
+        if (from.includes("/detail/") && to === "/snippets") {
             this.medias["closePod"].currentTime = 0;
             this.medias["closePod"].play();
         }
@@ -39044,11 +39038,11 @@ class $0c8eb68a78c8b2f7$var$App {
     setPages() {
         this.home = new $a48557c590541616$export$2e2bcd8739ae039();
         this.about = new $388f9f63da93d3ba$export$2e2bcd8739ae039();
-        this.explore = new $003d1444f70f3aa4$export$2e2bcd8739ae039();
+        this.snippets = new $d15d66e1ad4fc80d$export$2e2bcd8739ae039();
         this.pages = {
             "/": this.home,
             "/about": this.about,
-            "/explore": this.explore
+            "/snippets": this.snippets
         };
         const detailElements = document.querySelectorAll(".detail");
         detailElements.forEach((element)=>{
@@ -39096,7 +39090,7 @@ class $0c8eb68a78c8b2f7$var$App {
         if (this.page instanceof $388f9f63da93d3ba$export$2e2bcd8739ae039) this.page.returnPageSet = false;
         this.canvas.particles.on("goToEplore", ()=>{
             this.onChange({
-                url: "/explore"
+                url: "/snippets"
             });
         });
         this.canvas.detail.on("enterFullscreen", ()=>{

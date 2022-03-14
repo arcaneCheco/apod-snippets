@@ -4,21 +4,21 @@ import Media from "./Media";
 import GSAP from "gsap";
 import EventEmitter from "events";
 
-export default class Explore extends EventEmitter {
+export default class Snippets extends EventEmitter {
   scene: Scene;
   width: number;
   height: number;
   group = new Group();
   index = 4;
-  galleryElement = document.querySelector(".explore__gallery")!;
-  gap = document.querySelector(".explore__gap")!;
+  galleryElement = document.querySelector(".snippets__gallery")!;
+  gap = document.querySelector(".snippets__gap")!;
   mediaSize = 0;
   gapSize = 0;
   unitSize = 0;
   zMagnitude = 0;
   mediaLinks: NodeListOf<HTMLElement>;
   galleryWidth = 0;
-  mediaElements = document.querySelectorAll(".explore__gallery__media");
+  mediaElements = document.querySelectorAll(".snippets__gallery__media");
   scroll = {
     ease: 0.07,
     current: 0,
@@ -52,7 +52,7 @@ export default class Explore extends EventEmitter {
     this.height = height;
 
     this.mediaLinks = this.galleryElement.querySelectorAll(
-      ".explore__gallery__link"
+      ".snippets__gallery__link"
     );
 
     this.numMedias = this.mediaLinks.length;
@@ -256,7 +256,7 @@ export default class Explore extends EventEmitter {
     const distance = this.touchStart - x;
     if (Math.abs(distance) > 1) {
       this.mediaLinks[this.index].classList.add(
-        "explore__gallery__link--dragging"
+        "snippets__gallery__link--dragging"
       );
     }
     this.scroll.target = this.scroll.start + distance * 3;
@@ -264,7 +264,7 @@ export default class Explore extends EventEmitter {
 
   onTouchUp() {
     this.mediaLinks.forEach((element) =>
-      element.classList.remove("explore__gallery__link--dragging")
+      element.classList.remove("snippets__gallery__link--dragging")
     );
   }
 
@@ -274,13 +274,13 @@ export default class Explore extends EventEmitter {
 
     if (this.index !== index) {
       this.mediaLinks[this.index].classList.remove(
-        "explore__gallery__link--active"
+        "snippets__gallery__link--active"
       );
 
       this.index = index;
 
       this.mediaLinks[this.index].classList.add(
-        "explore__gallery__link--active"
+        "snippets__gallery__link--active"
       );
     }
   }

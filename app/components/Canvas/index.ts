@@ -4,7 +4,7 @@ import Smoke from "./Smoke";
 import Trail from "./Trail";
 import Home from "./Home";
 import About from "./About";
-import Explore from "./Explore";
+import Snippets from "./Snippets";
 import Detail from "./Detail";
 import Particles from "./Particles";
 
@@ -21,7 +21,7 @@ export default class Canvas {
   height: number;
   home: Home;
   about: About;
-  explore: Explore;
+  snippets: Snippets;
   detail: Detail;
   x;
   y;
@@ -29,7 +29,6 @@ export default class Canvas {
   smoke: Smoke;
   trail: Trail;
   particles: Particles;
-  templateRouteMap: any;
   constructor({ template }: { template: string }) {
     this.template = template;
 
@@ -42,13 +41,6 @@ export default class Canvas {
       start: 0,
       distance: 0,
       end: 0,
-    };
-
-    this.templateRouteMap = {
-      "": this.home,
-      explore: this.explore,
-      about: this.about,
-      detail: this.detail,
     };
 
     this.setRenderer();
@@ -110,14 +102,14 @@ export default class Canvas {
     this.about = new About();
   }
 
-  setExplore() {
-    this.explore = new Explore({
+  setSnippets() {
+    this.snippets = new Snippets({
       scene: this.scene,
       width: this.width,
       height: this.height,
     });
 
-    this.explore.on("toDetail", (horizontalPosition, depth) => {
+    this.snippets.on("toDetail", (horizontalPosition, depth) => {
       this.detail.transitionStartPosition = horizontalPosition;
       this.detail.transitionStartPositionDepth = depth;
     });
@@ -132,8 +124,8 @@ export default class Canvas {
       camera: this.camera,
     });
     this.detail.on("leavingDetail", (texture, podIndex) => {
-      this.explore.podTexture = texture;
-      this.explore.activePodIndex = podIndex;
+      this.snippets.podTexture = texture;
+      this.snippets.activePodIndex = podIndex;
     });
   }
 
@@ -143,7 +135,7 @@ export default class Canvas {
     this.setParticles();
     this.setHome();
     this.setAbout();
-    this.setExplore();
+    this.setSnippets();
     this.setDetail();
 
     this.onChange(this.template);
@@ -162,9 +154,9 @@ export default class Canvas {
     } else if (template === "/about") {
       this.about.show();
       this.active = this.about;
-    } else if (template === "/explore") {
-      this.explore.show(this.template);
-      this.active = this.explore;
+    } else if (template === "/snippets") {
+      this.snippets.show(this.template);
+      this.active = this.snippets;
     } else {
       this.detail.show({ from: this.template, to: template, time: this.time });
       this.active = this.detail;
@@ -196,23 +188,23 @@ export default class Canvas {
     !transition &&
       this.detail.onResize({ width: this.width, height: this.height });
     !transition &&
-      this.explore.onResize({ width: this.width, height: this.height });
+      this.snippets.onResize({ width: this.width, height: this.height });
   }
 
   onWheel(scroll: number) {
-    this.template === "/explore" && this.explore.onWheel(scroll);
+    this.template === "/snippets" && this.snippets.onWheel(scroll);
   }
 
   onTouchDown({ x, y }: { x: number; y: number }) {
-    this.active === this.explore && this.explore.onTouchDown({ x, y });
+    this.active === this.snippets && this.snippets.onTouchDown({ x, y });
 
     this.active == this.detail && this.detail.onTouchDown({ x, y });
   }
 
   onTouchMove({ x, y, isDown }: { x: number; y: number; isDown: boolean }) {
-    this.active === this.explore &&
+    this.active === this.snippets &&
       isDown &&
-      this.explore.onTouchMove({ x, y });
+      this.snippets.onTouchMove({ x, y });
 
     this.active === this.detail &&
       this.detail.onTouchMove({
@@ -226,14 +218,14 @@ export default class Canvas {
   }
 
   onTouchUp({ x, y }: { x: number; y: number }) {
-    this.active === this.explore && this.explore.onTouchUp();
+    this.active === this.snippets && this.snippets.onTouchUp();
     this.active === this.detail && this.detail.onTouchUp({ x, y });
   }
 
   update(scroll: number) {
     this.time += 0.01633;
 
-    this.active === this.explore && this.explore.update(this.time);
+    this.active === this.snippets && this.snippets.update(this.time);
     this.active === this.detail &&
       this.detail.update({ time: this.time, scroll: scroll });
 

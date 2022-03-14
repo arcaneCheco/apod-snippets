@@ -75,7 +75,7 @@ export default class Detail extends EventEmitter {
   isTransitioning: boolean;
   touchStart = new Vector2();
   orbitControlEnabled = false;
-  snippetRefElement = document.querySelector(".explore__gallery")!;
+  snippetRefElement = document.querySelector(".snippets__gallery")!;
   transitionStartPosition: number;
   transitionStartPositionDepth: number;
   constructor({ scene, template, camera }: any) {
@@ -97,7 +97,7 @@ export default class Detail extends EventEmitter {
     this.onResize({ width: this.width, height: this.height });
   }
 
-  fromExploreTransition(time: number) {
+  fromSnippetsTransition(time: number) {
     this.isTransitioning = true;
     this.group.rotation.set(0, 0, 0);
     this.materials.forEach((mat) => {
@@ -177,14 +177,14 @@ export default class Detail extends EventEmitter {
     GSAP.delayedCall(delay, () => {
       this.scene.add(this.group);
     });
-    if (from === "/explore") {
-      this.fromExploreTransition(time);
+    if (from === "/snippets") {
+      this.fromSnippetsTransition(time);
     } else if (from === "/about") {
       this.fromAboutTransition();
     }
   }
 
-  toExploreTransition() {
+  toSnippetsTransition() {
     const targetScale = this.snippetRefElement.clientWidth;
     const duration = 1;
     GSAP.to(this.group.scale, {
@@ -235,8 +235,8 @@ export default class Detail extends EventEmitter {
       this.active.textures[Math.max(this.active.scrollIndex - 1, 0)],
       this.active.index
     );
-    if (template === "/explore") {
-      this.toExploreTransition();
+    if (template === "/snippets") {
+      this.toSnippetsTransition();
     } else {
       this.scene.remove(this.group);
     }

@@ -35,19 +35,19 @@ export default class Sound {
 
   onChange({ from, to }: { from: string; to: string }) {
     if (this.isDisabled) return;
-    if (from === "/" && to === "/explore") {
+    if (from === "/" && to === "/snippets") {
       this.medias["homeToSnippets"].currentTime = 0;
       this.medias["homeToSnippets"].play();
     }
-    if (from === "/explore" && to === "/") {
+    if (from === "/snippets" && to === "/") {
       this.medias["snippetsToHome"].currentTime = 0;
       this.medias["snippetsToHome"].play();
     }
-    if (from === "/explore" && to.includes("/detail/")) {
+    if (from === "/snippets" && to.includes("/detail/")) {
       this.medias["openPod"].currentTime = 0;
       this.medias["openPod"].play();
     }
-    if (from.includes("/detail/") && to === "/explore") {
+    if (from.includes("/detail/") && to === "/snippets") {
       this.medias["closePod"].currentTime = 0;
       this.medias["closePod"].play();
     }

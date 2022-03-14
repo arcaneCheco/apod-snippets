@@ -1,0 +1,8 @@
+.snippets 
+  .snippets__wrapper 
+    .snippets__gallery 
+      each snippet in snippets.data.snippets 
+        a.snippets__gallery__link(href=`/detail/${snippet.pod.uid}` data-index=snippet.pod.data.index)
+          figure.snippets__gallery__media 
+            img.snippets__gallery__media__image(alt=snippet.media.name data-src=snippet.media.name)
+    .snippets__gap
