@@ -20,13 +20,15 @@
   padding: 1rem;
   width: 100%;
   @include media("<phone") {
-    height: 4rem;
+    height: 3.5rem;
+    padding: 0.5rem;
+    // padding-bottom: 0;
   }
   display: flex;
   pointer-events: all;
   gap: 1rem;
   position: absolute;
-  bottom: 10vh;
+  bottom: 10%;
 }
 
 .footer__social {
@@ -51,12 +53,17 @@
   display: flex;
   gap: 1rem;
   right: 4rem;
+  @include media("<phone") {
+    right: 3.5rem;
+  }
   overflow: hidden;
-  // opacity: 0;
+  opacity: 0;
   transform: translateX(7rem);
 }
 
 .footer__link {
+  height: 100%;
+  width: 100%;
   & > svg {
     height: 100%;
     width: auto;
@@ -67,6 +74,7 @@
   height: 100%;
   border: 1px solid #0000004d;
   display: flex;
+  z-index: 1;
 
   justify-content: center;
   align-items: center;

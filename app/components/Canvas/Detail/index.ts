@@ -34,7 +34,7 @@ export default class Detail extends EventEmitter {
     current: new Vector2(),
     target: new Vector2(),
     diff: new Vector2(),
-    sensitivity: 0.001,
+    sensitivity: 0.003,
     lerp: 0.05,
   };
   defaultRotation = new Vector3(0.002, 0.008, 0.005);
@@ -521,7 +521,6 @@ export default class Detail extends EventEmitter {
   }
 
   triggerTransition(down?: boolean) {
-    this.emit("pod scroll transition");
     GSAP.to(this.group.position, {
       x: this.active.imagePositions[this.active.scrollIndex],
       duration: 1,
@@ -594,20 +593,16 @@ export default class Detail extends EventEmitter {
       if (!this.isFullscreen) {
         this.defaultMotionUpdate(time);
       }
-      // console.log(this.mesh.position);
       this.previousScroll = this.scroll;
       this.scroll = scroll;
       const down = this.scroll > this.previousScroll;
       this.updateOrbitControl();
-      // scrolling to next:
       if (down && this.active.scrollIndex < 4) {
         if (this.scroll > this.active.triggerHeights[this.active.scrollIndex]) {
           this.active.scrollIndex++;
           this.triggerTransition(down);
         }
-      }
-      // scrolling to previous:
-      else if (this.active.scrollIndex > 0) {
+      } else if (this.active.scrollIndex > 0) {
         if (
           this.scroll < this.active.triggerHeights[this.active.scrollIndex - 1]
         ) {
@@ -615,8 +610,6 @@ export default class Detail extends EventEmitter {
           this.triggerTransition(down);
         }
       }
-      // if (this.active) {
-      // }
     }
   }
 }

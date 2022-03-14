@@ -23,18 +23,22 @@
 .navigation__icon {
   visibility: visible;
   position: absolute;
-  top: 10vh;
+  top: 10%;
   // right: 3vh;
   right: 0;
   height: 5rem;
   padding: 1rem;
+  // @include media("<phone") {
+  //   height: 4rem;
+  //   padding: 0.5rem;
+  // }
   z-index: 1;
   cursor: pointer;
   pointer-events: all;
 
   & > svg {
     height: 100%;
-    width: 100%;
+    width: auto;
   }
 }
 

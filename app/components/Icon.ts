@@ -1,5 +1,6 @@
 import GSAP from "gsap";
 import Component from "../classes/Component";
+import Detection from "../classes/Detection";
 
 export default class Icon extends Component {
   progress: number;
@@ -73,7 +74,7 @@ export default class Icon extends Component {
   }
 
   onEnterSite() {
-    this.addEventListeners();
+    Detection.isDesktop() && this.addEventListeners();
     this.show(this.template, true);
     this.setDefaultAnimation();
   }
@@ -110,6 +111,7 @@ export default class Icon extends Component {
       });
       GSAP.set(this.elements.wrapper, {
         height: "10vw",
+        width: "10vw",
         top: "",
         left: "",
         opacity: 0.5,
@@ -131,7 +133,8 @@ export default class Icon extends Component {
       GSAP.set(this.elements.wrapper, {
         opacity: 1,
         height: "5rem",
-        top: "10vh",
+        width: "5rem",
+        top: "10%",
         left: "0",
         right: "",
         // left: "1rem",

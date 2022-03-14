@@ -13,12 +13,26 @@ import Preloader from "./components/Preloader";
 import Icon from "./components/Icon";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
-import Detection from "./classes/Detection";
 
 import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 
-// import Sound from "./components/Sound";
-class Sound {}
+// TODO
+// get correct audio sources
+// reduce audio file sizes
+// favicon
+// nav overlay css wrong on safari ios
+// preloader title on mobile css
+// file names on prismic
+// add better icon on nav overlay
+// change routing names
+// close button on pod page DONE
+// remove mavIconEnter and IconEnter sounds on mobile DONE
+// make orbit control faster/more sensitive DONE
+// home screen background add more color DONE
+// add trail back on mobile for other pages DONE
+// DONE
+
+import Sound from "./components/Sound";
 
 class App {
   template: string;
@@ -49,52 +63,42 @@ class App {
     this.setFooter();
     this.setNavigation();
     this.setPages();
-
     this.addLinkListeners();
   }
 
   setSound() {
     this.sound = new Sound();
 
-    // this.footer.on("sound enabled", () => {
-    //   this.sound.enableSound();
-    // });
-    // this.footer.on("sound disabled", () => {
-    //   this.sound.disableSound();
-    // });
-    // this.navigation.on("open nav", () => {
-    //   this.sound.onOpenNav();
-    // });
-    // this.navigation.on("close nav", () => {
-    //   this.sound.onCloseNav();
-    // });
-    // this.navigation.on("enter nav icon", () => {
-    //   this.sound.onEnterNavIcon();
-    // });
-    // this.canvas.particles.on("vibrate particles start", () => {
-    //   this.sound.onVibrateParticlesStart();
-    // });
-    // this.canvas.particles.on("vibrate particles end", () => {
-    //   this.sound.onVibrateParticlesEnd();
-    // });
-    // this.canvas.detail.on("enter fullscreen", () => {
-    //   this.sound.onEnterFullscreen();
-    // });
-    // this.canvas.detail.on("exit fullscreen", () => {
-    //   this.sound.onExitFullscreen();
-    // });
-    // this.canvas.detail.on("pod scroll transition", () => {
-    //   this.sound.onPodScrollTransition();
-    // });
-    // this.preloader.on("enter site", () => {
-    //   this.sound.enableSound();
-    // });
-    // this.canvas.explore.on("scrolling snippets", () => {
-    //   this.sound.onScrollingSnippets();
-    // });
-    // this.canvas.trail.on("update trail", () => {
-    //   this.sound.onUpdateTrail();
-    // });
+    this.footer.on("sound enabled", () => {
+      this.sound.enableSound();
+    });
+    this.footer.on("sound disabled", () => {
+      this.sound.disableSound();
+    });
+    this.navigation.on("open nav", () => {
+      this.sound.onOpenNav();
+    });
+    this.navigation.on("close nav", () => {
+      this.sound.onCloseNav();
+    });
+    this.navigation.on("enter nav icon", () => {
+      this.sound.onEnterNavIcon();
+    });
+    this.canvas.particles.on("vibrate particles start", () => {
+      this.sound.onVibrateParticlesStart();
+    });
+    this.canvas.particles.on("vibrate particles end", () => {
+      this.sound.onVibrateParticlesEnd();
+    });
+    this.canvas.detail.on("enter fullscreen", () => {
+      this.sound.onEnterFullscreen();
+    });
+    this.canvas.detail.on("exit fullscreen", () => {
+      this.sound.onExitFullscreen();
+    });
+    this.preloader.on("enter site", () => {
+      this.sound.enableSound();
+    });
   }
 
   setCanvas() {
@@ -177,8 +181,6 @@ class App {
   async onChange({ url, push = true }: any) {
     url = url.replace(window.location.origin, "");
 
-    console.log(this.template, url);
-
     if (this.template === url) {
       this.navigation.onChange();
       return;
@@ -188,7 +190,7 @@ class App {
       window.history.pushState({}, "", url);
     }
 
-    // this.sound.onChange({ from: this.template, to: window.location.pathname });
+    this.sound.onChange({ from: this.template, to: window.location.pathname });
 
     this.template = window.location.pathname;
 
@@ -209,7 +211,7 @@ class App {
   onPreloaded() {
     this.canvas.onPreloaded();
     this.onResize();
-    // this.setSound();
+    this.setSound();
     this.page.show();
     this.update();
 
@@ -256,13 +258,13 @@ class App {
     this.page.isScrollable && this.page.onWheel(pixelY);
   }
 
-  onTouchDown(event: TouchEvent | MouseEvent) {
+  onTouchDown(event: any) {
     if (this.navigation.isOpen) return;
 
     this.isDown = true;
 
     let x: number, y: number;
-    if (event instanceof TouchEvent) {
+    if (event.touches) {
       x = event.touches[0].clientX;
       y = event.touches[0].clientY;
     } else {
@@ -274,11 +276,11 @@ class App {
     this.page.onTouchDown(y);
   }
 
-  onTouchMove(event: TouchEvent | MouseEvent) {
+  onTouchMove(event: any) {
     if (this.navigation.isOpen) return;
 
     let x: number, y: number;
-    if (event instanceof TouchEvent) {
+    if (event.touches) {
       x = event.touches[0].clientX;
       y = event.touches[0].clientY;
       this.touchEnd.x = x;
@@ -292,12 +294,12 @@ class App {
     this.isDown && this.page.isScrollable && this.page.onTouchMove(y);
   }
 
-  onTouchUp(event: TouchEvent | MouseEvent) {
+  onTouchUp(event: any) {
     if (this.navigation.isOpen) return;
     this.isDown = false;
 
     let x: number, y: number;
-    if (event instanceof TouchEvent) {
+    if (event.touches) {
       x = this.touchEnd.x;
       y = this.touchEnd.y;
     } else {
@@ -309,6 +311,11 @@ class App {
   }
 
   onResize(_?: any, transition?: boolean) {
+    document.documentElement.style.setProperty(
+      "--vh",
+      `${window.innerHeight * 0.01}px`
+    );
+
     this.canvas.onResize(transition);
 
     this.page.onResize();
@@ -328,12 +335,10 @@ class App {
 
     window.addEventListener("resize", this.onResize);
 
-    // if (Detection.isDesktop()) {
     window.addEventListener("wheel", this.onWheel);
     window.addEventListener("mousedown", this.onTouchDown);
     window.addEventListener("mousemove", this.onTouchMove);
     window.addEventListener("mouseup", this.onTouchUp);
-    // }
 
     window.addEventListener("touchstart", this.onTouchDown);
     window.addEventListener("touchmove", this.onTouchMove);
@@ -346,8 +351,6 @@ class App {
     links.forEach((link) => {
       const { href } = link;
       const isLocal = href.indexOf(window.location.origin) > -1;
-
-      console.log(href, isLocal);
 
       link.onclick = (event) => {
         if (isLocal) {

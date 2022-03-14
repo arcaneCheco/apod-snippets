@@ -38,12 +38,9 @@ html {
 
 #canvas {
   z-index: z("canvas");
-  // z-index: 100;
   pointer-events: none;
   position: fixed;
   width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 80%;
+  top: 10%;
 }

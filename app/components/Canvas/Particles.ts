@@ -275,14 +275,9 @@ export default class Particles extends EventEmitter {
   update(time: number) {
     if (this.mesh.visible) {
       this.material && (this.material.uniforms.uTime.value = time);
-      if (this.mesh && this.template !== "/") {
-        this.mesh.rotation.z += 0.0001;
-      }
-      if (this.mesh) {
-        this.rotation.current.lerp(this.rotation.target, 0.004);
-        this.mesh.rotation.x = this.rotation.current.x;
-        this.mesh.rotation.y = this.rotation.current.y;
-      }
+      this.rotation.current.lerp(this.rotation.target, 0.004);
+      this.mesh.rotation.x = this.rotation.current.x;
+      this.mesh.rotation.y = this.rotation.current.y;
     }
   }
 }

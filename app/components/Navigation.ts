@@ -1,4 +1,5 @@
 import Component from "../classes/Component";
+import Detection from "../classes/Detection";
 import GSAP from "gsap";
 
 export default class Navigation extends Component {
@@ -141,14 +142,17 @@ export default class Navigation extends Component {
   }
 
   addEventListeners(): void {
-    this.elements.icon.addEventListener(
-      "mouseenter",
-      this.onMouseEnter.bind(this)
-    );
-    this.elements.icon.addEventListener(
-      "mouseleave",
-      this.onMouseLeave.bind(this)
-    );
+    if (Detection.isDesktop()) {
+      this.elements.icon.addEventListener(
+        "mouseenter",
+        this.onMouseEnter.bind(this)
+      );
+      this.elements.icon.addEventListener(
+        "mouseleave",
+        this.onMouseLeave.bind(this)
+      );
+    }
+
     this.elements.icon.addEventListener("click", this.toggle.bind(this));
 
     this.elements.overlay.addEventListener("click", () => {

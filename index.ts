@@ -62,8 +62,10 @@ const handleRequest = async (api: any) => {
     textures[image.media.name] = image.media.url;
   });
 
-  // additionalAssets.data.sounds.forEach((sound: any) => {
-  // });
+  additionalAssets.data.sounds.forEach((sound: any) => {
+    sound.media.name = sound.media.name.split(".")[0];
+    sounds[sound.media.name] = sound.media.url;
+  });
 
   return {
     home,

@@ -1,6 +1,5 @@
 .parcel-cache/
 .env
-public/
 node_modules/
 assets/
 sounds/

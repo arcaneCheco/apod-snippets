@@ -1,4 +1,3 @@
-import EventEmitter from "events";
 import Detection from "../../classes/Detection";
 import {
   Texture,
@@ -16,7 +15,7 @@ import {
   AdditiveBlending,
 } from "three";
 
-export default class Trail extends EventEmitter {
+export default class Trail {
   width: number;
   height: number;
   texture: Texture;
@@ -30,7 +29,7 @@ export default class Trail extends EventEmitter {
   currentTouch = 0;
   map = window.TEXTURES.vortex;
   target: THREE.WebGLRenderTarget;
-  numTouch = 8;
+  numTouch = 10;
   trail: Mesh<PlaneGeometry, MeshBasicMaterial>[] = [];
   stop = true;
   pause = false;
@@ -47,7 +46,6 @@ export default class Trail extends EventEmitter {
     camera: PerspectiveCamera;
     renderer: WebGLRenderer;
   }) {
-    super();
     this.width = width;
     this.height = height;
     this.scene.position.y = 0.5 * (1 - ratio) * this.height;
@@ -99,7 +97,6 @@ export default class Trail extends EventEmitter {
 
   updateTouch() {
     if (this.position.distanceTo(this.previous) > 6) {
-      this.emit("update trail");
       this.addTouch(this.position.x, this.position.y, this.currentTouch);
       this.currentTouch = (this.currentTouch + 1) % this.numTouch;
     }
@@ -112,12 +109,12 @@ export default class Trail extends EventEmitter {
   }
 
   onChange(template: string) {
-    if (Detection.isDesktop()) return;
-    if (template !== "/") {
-      this.pause = true;
-    } else {
-      this.pause = false;
-    }
+    // if (Detection.isDesktop()) return;
+    // if (template !== "/") {
+    //   this.pause = true;
+    // } else {
+    //   this.pause = false;
+    // }
   }
 
   onResize({ width, height, ratio }: any) {

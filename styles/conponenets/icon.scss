@@ -9,13 +9,16 @@
   height: 10vw;
   max-height: 13rem;
   min-height: 7rem;
-  width: auto;
+  max-width: 13rem;
+  min-width: 7rem;
+  // width: fit-content;
 
   position: absolute;
   overflow: hidden;
 
   & > svg {
     height: 100%;
+    width: auto;
   }
 }
 

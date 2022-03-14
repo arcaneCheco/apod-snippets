@@ -114,8 +114,12 @@ export default class Footer extends Component {
       this.openSocial
     );
     this.elements.socialToggleWrapper.addEventListener(
-      "click",
+      "mousedown",
       this.closeSocial
+    );
+    this.elements.socialToggleWrapper.addEventListener(
+      "touchstart",
+      this.openSocial
     );
     this.elements.testIcons.addEventListener("mouseleave", this.closeSocial);
   }

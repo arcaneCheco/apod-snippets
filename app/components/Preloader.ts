@@ -37,9 +37,6 @@ export default class Preloader extends Component {
         y: "0",
         duration: 10,
         repeat: -1,
-        onRepeat: () => {
-          console.log("hello");
-        },
         ease: "none",
       }
     );

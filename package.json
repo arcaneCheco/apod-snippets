@@ -3,12 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npx nodemon ./index.ts"
+    "dev": "npx nodemon ./index.ts",
+    "build:app": "npx parcel build ./app/app.ts --dist-dir dist/app --no-optimize --no-source-maps",
+    "build:style": "npx parcel build ./styles/styles.scss --dist-dir dist/styles --no-optimize --no-source-maps",
+    "watch:app": "watch 'npm run build:app' ./app",
+    "watch:style": "watch 'npm run build:style' ./styles"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@babel/runtime": "^7.16.7",
     "@bentoproject/fit-text": "^1.2201262038.1",
     "@prismicio/client": "^5.1.0",
     "dotenv": "^10.0.0",
@@ -39,6 +42,7 @@
     "nodemon": "^2.0.15",
     "parcel": "^2.3.2",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "watch": "^1.0.2"
   }
 }

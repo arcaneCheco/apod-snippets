@@ -16,7 +16,6 @@ export default class Detail extends Page {
         titleBox: ".detail__title__box",
         closeButton: ".detail__close",
       },
-      // isScrollable: false,
     });
 
     this.addEventListeners();
@@ -110,6 +109,15 @@ export default class Detail extends Page {
         ease: "power2.out",
       });
     });
+  }
+
+  update(): void {
+    super.update();
+    if (this.scroll.current < window.innerHeight * 0.7) {
+      this.elements.closeButton.style.opacity = 1;
+    } else {
+      this.elements.closeButton.style.opacity = 0.4;
+    }
   }
 
   addEventListeners(): void {}

@@ -29,7 +29,6 @@ export default class Canvas {
   smoke: Smoke;
   trail: Trail;
   particles: Particles;
-  isPreloaded: boolean = false;
   templateRouteMap: any;
   constructor({ template }: { template: string }) {
     this.template = template;
@@ -148,16 +147,14 @@ export default class Canvas {
     this.setDetail();
 
     this.onChange(this.template);
-
-    this.isPreloaded = true;
   }
 
   async onChange(template: string) {
     this.active.hide(template);
 
     this.particles && this.particles.onChange(template);
-    this.smoke && this.smoke.onChange(template, this.isPreloaded);
-    this.trail && this.trail.onChange(template);
+    this.smoke && this.smoke.onChange(template);
+    // this.trail && this.trail.onChange(template);
 
     if (template === "/") {
       this.home.show();
@@ -178,7 +175,9 @@ export default class Canvas {
 
   onResize(transition?: boolean) {
     this.width = this.container.offsetWidth;
-    this.height = this.container.offsetHeight * this.ratio;
+    this.height = this.container.offsetHeight;
+    // this.height = this.container.offsetHeight * this.ratio;
+    // this.renderer.domElement.style.top = ""
     this.renderer.setSize(this.width, this.height);
     this.camera.fov = (360 / Math.PI) * Math.atan(this.height * 0.001);
     this.camera.aspect = this.width / this.height;

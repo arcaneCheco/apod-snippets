@@ -2,6 +2,7 @@ import * as THREE from "three";
 import GSAP from "gsap";
 import vertexShader from "../../shaders/smoke/vertex.glsl";
 import fragmentShader from "../../shaders/smoke/fragment.glsl";
+import e from "express";
 
 export default class Smoke {
   group;
@@ -86,29 +87,7 @@ export default class Smoke {
     this.material.uniforms.uAspect.value = this.width / this.height;
   }
 
-  onChange(template: any, isPreloaded: boolean) {
-    console.log("changing background");
-    console.log(template);
-    if (template.includes("/detail/")) {
-      GSAP.to(this.material.uniforms.uMultiplier, {
-        value: 0.25,
-        duration: 1.5,
-      });
-      GSAP.to(this.material.uniforms.uWhite, {
-        value: 0,
-        duration: 1.5,
-      });
-    }
-    if (template === "/explore") {
-      GSAP.to(this.material.uniforms.uMultiplier, {
-        value: 1,
-        duration: 1.5,
-      });
-      GSAP.to(this.material.uniforms.uWhite, {
-        value: 0,
-        duration: 1.5,
-      });
-    }
+  async onChange(template: string) {
     if (template === "/about") {
       GSAP.to(this.material.uniforms.uWhite, {
         value: 0.7,
@@ -120,35 +99,38 @@ export default class Smoke {
         value: 0,
         duration: 1.5,
       });
-      if (this.template !== "/") {
-        GSAP.to(this.material.uniforms.uBlack, {
-          value: 0,
-          duration: 1.5,
-          onComplete: () => {
-            this.material.uniforms.uBlackGradient.value = 1;
-            this.material.uniforms.uBlack.value = 1;
-          },
-        });
-        GSAP.to(this.material.uniforms.uBlack, {
-          value: 0.28,
-          duration: 2.5,
-          delay: 1.5,
-        });
-      } else {
-        GSAP.to(this.material.uniforms.uBlack, {
-          value: 0.28,
-          duration: 1.5,
-        });
-        GSAP.to(this.material.uniforms.uBlackGradient, {
-          value: 0.8,
-          duration: 1.5,
-        });
-        GSAP.to(this.material.uniforms.uMultiplier, {
-          value: 1,
-          duration: 1.5,
-        });
-      }
-    } else if (template !== "/") {
+      GSAP.to(this.material.uniforms.uMultiplier, {
+        value: 0.8,
+        duration: 1.5,
+      });
+      GSAP.to(this.material.uniforms.uBlack, {
+        value: 0,
+        duration: 1,
+        onComplete: () => {
+          this.material.uniforms.uBlackGradient.value = 1;
+          this.material.uniforms.uBlack.value = 1;
+        },
+      });
+      GSAP.to(this.material.uniforms.uBlack, {
+        value: 0.22,
+        duration: 1.5,
+        delay: 1,
+      });
+      GSAP.to(this.material.uniforms.uBlackGradient, {
+        value: 0.8,
+        duration: 1.5,
+        delay: 1,
+      });
+    }
+    if (template.includes("/detail/")) {
+      GSAP.to(this.material.uniforms.uMultiplier, {
+        value: 0.25,
+        duration: 1.5,
+      });
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0,
+        duration: 1.5,
+      });
       if (this.template === "/") {
         GSAP.to(this.material.uniforms.uBlack, {
           value: 1,
@@ -159,21 +141,48 @@ export default class Smoke {
           },
         });
         GSAP.to(this.material.uniforms.uBlack, {
-          value: 0.25,
+          value: 0.3,
           duration: 1.5,
           delay: 1.5,
         });
       } else {
         this.material.uniforms.uBlackGradient.value = -1;
         GSAP.to(this.material.uniforms.uBlack, {
-          value: 0.25,
+          value: 0.3,
           duration: 1.5,
-          delay: 1.5,
         });
       }
     }
-    if (isPreloaded) {
-    } else {
+    if (template === "/explore") {
+      GSAP.to(this.material.uniforms.uMultiplier, {
+        value: 1,
+        duration: 1.5,
+      });
+      GSAP.to(this.material.uniforms.uWhite, {
+        value: 0,
+        duration: 1.5,
+      });
+      if (this.template === "/") {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 1,
+          duration: 1.5,
+          onComplete: () => {
+            this.material.uniforms.uBlackGradient.value = -1;
+            this.material.uniforms.uBlack.value = 0;
+          },
+        });
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.28,
+          duration: 1.5,
+          delay: 1.5,
+        });
+      } else {
+        this.material.uniforms.uBlackGradient.value = -1;
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.28,
+          duration: 1.5,
+        });
+      }
     }
     this.template = template;
   }

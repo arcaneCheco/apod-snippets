@@ -20,8 +20,6 @@ export default class About extends Page {
       isScrollable: true,
     });
 
-    console.log(this.elements.wrapper.scrollHeight, "-> scrollheight");
-    console.log(this.elements.wrapper.clientHeight, "-> clientHeight");
     this.addEventListeners();
   }
 
@@ -51,8 +49,6 @@ export default class About extends Page {
       this.elements.creditsList.classList.toggle("active");
       this.onResize();
       window.requestAnimationFrame(() => {
-        console.log(this.elements.pod);
-        console.log(this.elements.pod.scrollHeight);
         this.scroll.target += this.elements.pod.clientHeight + 64;
       });
     });

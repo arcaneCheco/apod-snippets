@@ -273,7 +273,6 @@ export default class Explore extends EventEmitter {
     if (index < 0) index += 5;
 
     if (this.index !== index) {
-      this.emit("scrolling snippets");
       this.mediaLinks[this.index].classList.remove(
         "explore__gallery__link--active"
       );
