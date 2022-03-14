@@ -144,8 +144,8 @@ export default class Canvas {
   async onChange(template: string) {
     this.active.hide(template);
 
-    this.particles && this.particles.onChange(template); // try remove conditional
-    this.background && this.background.onChange(template);
+    this.particles.onChange(template); // try remove conditional
+    this.background.onChange(template);
     // this.trail && this.trail.onChange(template);
 
     if (template === "/") {
@@ -168,8 +168,6 @@ export default class Canvas {
   onResize(transition?: boolean) {
     this.width = this.container.offsetWidth;
     this.height = this.container.offsetHeight;
-    // this.height = this.container.offsetHeight * this.ratio;
-    // this.renderer.domElement.style.top = ""
     this.renderer.setSize(this.width, this.height);
     this.camera.fov = (360 / Math.PI) * Math.atan(this.height * 0.001);
     this.camera.aspect = this.width / this.height;

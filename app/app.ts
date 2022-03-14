@@ -20,8 +20,7 @@ import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 // get correct audio sources
 // reduce audio file sizes
 // favicon
-// nav overlay css wrong on safari ios
-// preloader title on mobile css
+// clean up typescript
 // file names on prismic
 // DONE
 

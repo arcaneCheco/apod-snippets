@@ -79,6 +79,7 @@
 .preloader__title__text {
   height: 100%;
   text-align: center;
+  width: 100%; // not sure
 
   &::before,
   &::after {

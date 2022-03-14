@@ -188,9 +188,6 @@ html {
 .overlay {
   pointer-events: none;
   z-index: 100;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
 }
 
 .overlay__top,
@@ -198,6 +195,15 @@ html {
   height: 10%;
   width: 100%;
   background: black;
+  position: absolute;
+}
+
+.overlay__top {
+  top: 0;
+}
+
+.overlay__bottom {
+  bottom: 0;
 }
 
 #canvas {
@@ -287,6 +293,7 @@ html {
 .preloader__title__text {
   height: 100%;
   text-align: center;
+  width: 100%;
 }
 .preloader__title__text::before, .preloader__title__text::after {
   content: attr(data-text);
@@ -449,10 +456,10 @@ html {
 .navigation__overlay {
   pointer-events: all;
   width: 0;
-  height: 80%;
+  height: 81%;
   position: absolute;
   right: 0;
-  top: 10%;
+  top: 9.9%;
 }
 
 .navigation__icon {
