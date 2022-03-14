@@ -33067,7 +33067,7 @@ $8776611c13881899$exports = "#define GLSLIFY 1\nvarying vec2 vUv;\n\nvoid main()
 
 
 var $c0e86999a4e0e0ad$exports = {};
-$c0e86999a4e0e0ad$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform float uDistortion;\nuniform sampler2D uTextureN;\nuniform float uSpeedXneb;\nuniform float uSpeedYneb;\nuniform sampler2D uTextureC;\nuniform float uColorSpeed;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uSpeedXsmoke;\nuniform float uSpeedYsmoke;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\t// trail\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\t// colors\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;\n\t// color *= 0.; //not-original\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\t\n\t// gl_FragColor *= 2.; //not-original\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\t// gl_FragColor.rgb = vec3(1.5) - gl_FragColor.rgb; //not-original\n\t// gl_FragColor.a = 1.; //not-original\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n// vec2 rotate(vec2 v, float a) {\n// \tfloat s = sin(a);\n// \tfloat c = cos(a);\n// \tmat2 m = mat2(c, -s, s, c);\n// \treturn m * v;\n// }\n// cool pattern:\n// float random = texture2D(uTextureR, vUv).r;\n// float lighIntensity = 0.01/distance(vec2(0.5), mod(10.*random*vUv, 1.));\n// vec3 light = vec3(2., 0.4, 0.4) * lighIntensity;\n// float v = 1. -texture2D(uTextureV, aUv).r;\n// v *= step(distance(vec2(0.), nUv), 0.5);\n\n// centre and rotate image\n// vec2 aUv = vUv;\n// aUv.x *= uAspect;\n// aUv.x -= (uAspect - 1.) * 0.5;\n// aUv = rotate(aUv-vec2(0.5), uTime*0.9)+vec2(0.5);\n// float v = 1. -texture2D(uTextureV, aUv).r;\n// v *= step(distance(vec2(0.), nUv), 0.5);\n\n";
+$c0e86999a4e0e0ad$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform float uDistortion;\nuniform sampler2D uTextureN;\nuniform float uSpeedXneb;\nuniform float uSpeedYneb;\nuniform sampler2D uTextureC;\nuniform float uColorSpeed;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uSpeedXsmoke;\nuniform float uSpeedYsmoke;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n";
 
 
 class $83e3100a08413060$export$2e2bcd8739ae039 {
@@ -33175,24 +33175,35 @@ class $83e3100a08413060$export$2e2bcd8739ae039 {
                 value: 0.8,
                 duration: 1.5
             });
-            $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlack, {
-                value: 0,
-                duration: 1,
-                onComplete: ()=>{
-                    this.material.uniforms.uBlackGradient.value = 1;
-                    this.material.uniforms.uBlack.value = 1;
-                }
-            });
-            $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlack, {
-                value: 0.22,
-                duration: 1.5,
-                delay: 1
-            });
-            $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlackGradient, {
-                value: 0.8,
-                duration: 1.5,
-                delay: 1
-            });
+            if (this.material.uniforms.uBlackGradient.value < 0) {
+                $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlack, {
+                    value: 0,
+                    duration: 1,
+                    onComplete: ()=>{
+                        this.material.uniforms.uBlackGradient.value = 1;
+                        this.material.uniforms.uBlack.value = 1;
+                    }
+                });
+                $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlack, {
+                    value: 0.22,
+                    duration: 1.5,
+                    delay: 1
+                });
+                $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlackGradient, {
+                    value: 0.8,
+                    duration: 1.5,
+                    delay: 1
+                });
+            } else {
+                $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlack, {
+                    value: 0.22,
+                    duration: 1.5
+                });
+                $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uBlackGradient, {
+                    value: 0.8,
+                    duration: 1.5
+                });
+            }
         }
         if (template.includes("/detail/")) {
             $980dae104ebd016a$export$99ee26438460406a.to(this.material.uniforms.uMultiplier, {
@@ -34202,12 +34213,12 @@ var $b5ed3cfaeb1f6db4$exports = {};
 $b5ed3cfaeb1f6db4$exports = "#define GLSLIFY 1\n#define OCTAVES 2\n\nuniform float uTime;\nuniform float uC;\nuniform sampler2D uTexture;\n\nvarying vec2 vUv;\n\nvec2 rotUv(vec2 uv, float a) {\n    float c = cos(a);\n    float s = sin(a);\n    mat2 m = mat2(c,s,-s,c);\n    return m * uv;\n}\n\nvec2 random2(vec2 st){\n      vec2 t = vec2(texture2D(uTexture, st/1023.).x, texture2D(uTexture, st/1023.+.5).x);\n      return t*t*4.;\n    }\n\n// value noise: https://www.shadertoy.com/view/lsf3WH\nfloat noise(vec2 st) {\n        vec2 i = floor(st);\n        vec2 f = fract(st);\n\n        vec2 u = f*f*(3.0-2.0*f);\n\n        return mix( mix( dot( random2(i + vec2(0.0,0.0) ), f - vec2(0.0,0.0) ), \n                         dot( random2(i + vec2(1.0,0.0) ), f - vec2(1.0,0.0) ), u.x),\n                    mix( dot( random2(i + vec2(0.0,1.0) ), f - vec2(0.0,1.0) ), \n                         dot( random2(i + vec2(1.0,1.0) ), f - vec2(1.0,1.0) ), u.x), u.y);\n    }\n\nfloat fbm(in vec2 _st) {\n      float v = 0.0;\n      float a = 0.5;\n      vec2 shift = vec2(100.0);\n      for (int i = 0; i < OCTAVES; ++i) {\n          v += a * noise(_st);\n        _st = rotUv(_st, 0.5) * 2. + shift;\n        a *= 0.4;\n      }\n      return v;\n    }\n\nfloat pattern(vec2 uv, float time, inout vec2 q, inout vec2 r) {\n      q = vec2(fbm(uv * .4), fbm(uv + vec2(5.2, 1.3)));\n\n      r = vec2(fbm(uv * .1 + 4.0 * q + vec2(1.7 - time / 2.,9.2)), fbm(uv + 4.0 * q + vec2(8.3 - time / 2., 2.8)));\n\n      vec2 s = vec2(fbm(uv + 5.0 * r + vec2(21.7 - time / 2., 90.2)), fbm( uv * .05 + 5.0 * r + vec2(80.3 - time / 2., 20.8))) * .35;\n\n      return fbm(uv * .05 + 4.0 * s);\n    }\n\n// pattern adapted from: https://www.shadertoy.com/view/wttXz8\nvoid main() {\n    vec2 nUv = vUv - vec2(0.5);\n    nUv = rotUv(nUv, 0.1 * uTime);\n    nUv *= 0.9 * (sin(uTime)) + 3.;\n    nUv.x -= 0.2 * uTime;\n\n    vec2 q = vec2(0.);\n    vec2 r = vec2(0.);\n\n    float c = 3. * abs(pattern(nUv, uTime, q, r));\n    vec3 col = vec3(c);\n    col.r += dot(q, r) * 15. * uC;\n    col.b += dot(q, r) * 10. * (1. - uC);\n\n    float strength = smoothstep(1., 0.0, 2.5*distance(vUv, vec2(0.5)));\n    col = mix(vec3(0.), col, strength);\n\n    gl_FragColor = vec4(col, 1.);\n}";
 
 
-var $26dcf82345c4af07$exports = {};
-$26dcf82345c4af07$exports = "#define GLSLIFY 1\nattribute vec3 aSphere;\n\nuniform float uProgress;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec3 pos = position;\n    pos = mix(pos, aSphere, uProgress);\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);\n    vUv = uv;\n}";
+var $efa27b50db0c8f94$exports = {};
+$efa27b50db0c8f94$exports = "#define GLSLIFY 1\nattribute vec3 aSphere;\n\nuniform float uProgress;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec3 pos = position;\n    pos = mix(pos, aSphere, uProgress);\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.);\n    vUv = uv;\n}";
 
 
-var $bb88f49ff10399c9$exports = {};
-$bb88f49ff10399c9$exports = "#define GLSLIFY 1\nuniform sampler2D uMap;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec4 map = texture2D(uMap, vUv);\n    gl_FragColor = vec4(vUv, 1., 1.);\n    gl_FragColor = map;\n}";
+var $bc828eb139ee78c0$exports = {};
+$bc828eb139ee78c0$exports = "#define GLSLIFY 1\nuniform sampler2D uMap;\n\nvarying vec2 vUv;\n\nvoid main() {\n    vec4 map = texture2D(uMap, vUv);\n    gl_FragColor = vec4(vUv, 1., 1.);\n    gl_FragColor = map;\n}";
 
 
 
@@ -34766,7 +34777,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
     setDefaultMaterial() {
         const noiseTexture = window.TEXTURES.noise;
         this.defaultMaterial = new $2d9d8c9fc2282acc$export$83c7d75d550a8b0d({
-            vertexShader: (/*@__PURE__*/$parcel$interopDefault($26dcf82345c4af07$exports)),
+            vertexShader: (/*@__PURE__*/$parcel$interopDefault($efa27b50db0c8f94$exports)),
             fragmentShader: (/*@__PURE__*/$parcel$interopDefault($b5ed3cfaeb1f6db4$exports)),
             depthTest: false,
             transparent: true,
@@ -34788,8 +34799,8 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
     }
     setTextureMaterials() {
         const textureMaterial = new $2d9d8c9fc2282acc$export$83c7d75d550a8b0d({
-            vertexShader: (/*@__PURE__*/$parcel$interopDefault($26dcf82345c4af07$exports)),
-            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($bb88f49ff10399c9$exports)),
+            vertexShader: (/*@__PURE__*/$parcel$interopDefault($efa27b50db0c8f94$exports)),
+            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($bc828eb139ee78c0$exports)),
             depthTest: false,
             transparent: true,
             uniforms: {

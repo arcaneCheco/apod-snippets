@@ -14,8 +14,8 @@ import {
 } from "three";
 import GSAP from "gsap";
 import fragmentShaderDef from "../../../shaders/detail/fragmentDef.glsl";
-import vertexShaderCube from "../../../shaders/detail/vertexCube.glsl";
-import fragmentShaderCube from "../../../shaders/detail/fragmentCube.glsl";
+import vertexShader from "../../../shaders/detail/vertex.glsl";
+import fragmentShader from "../../../shaders/detail/fragment.glsl";
 import DetailDom from "./DetailDom";
 import Mirror from "./Mirror";
 import Detection from "../../../classes/Detection";
@@ -271,7 +271,7 @@ export default class Detail extends EventEmitter {
   setDefaultMaterial() {
     const noiseTexture = window.TEXTURES.noise;
     this.defaultMaterial = new ShaderMaterial({
-      vertexShader: vertexShaderCube,
+      vertexShader,
       fragmentShader: fragmentShaderDef,
       depthTest: false,
       transparent: true,
@@ -286,8 +286,8 @@ export default class Detail extends EventEmitter {
 
   setTextureMaterials() {
     const textureMaterial = new ShaderMaterial({
-      vertexShader: vertexShaderCube,
-      fragmentShader: fragmentShaderCube,
+      vertexShader,
+      fragmentShader,
       depthTest: false,
       transparent: true,
       uniforms: {

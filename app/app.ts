@@ -23,8 +23,8 @@ import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 // nav overlay css wrong on safari ios
 // preloader title on mobile css
 // file names on prismic
+// clean up shader files
 // add better icon on nav overlay
-// change routing names
 // DONE
 
 import Sound from "./components/Sound";

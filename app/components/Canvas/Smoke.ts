@@ -103,24 +103,35 @@ export default class Smoke {
         value: 0.8,
         duration: 1.5,
       });
-      GSAP.to(this.material.uniforms.uBlack, {
-        value: 0,
-        duration: 1,
-        onComplete: () => {
-          this.material.uniforms.uBlackGradient.value = 1;
-          this.material.uniforms.uBlack.value = 1;
-        },
-      });
-      GSAP.to(this.material.uniforms.uBlack, {
-        value: 0.22,
-        duration: 1.5,
-        delay: 1,
-      });
-      GSAP.to(this.material.uniforms.uBlackGradient, {
-        value: 0.8,
-        duration: 1.5,
-        delay: 1,
-      });
+      if (this.material.uniforms.uBlackGradient.value < 0) {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0,
+          duration: 1,
+          onComplete: () => {
+            this.material.uniforms.uBlackGradient.value = 1;
+            this.material.uniforms.uBlack.value = 1;
+          },
+        });
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.22,
+          duration: 1.5,
+          delay: 1,
+        });
+        GSAP.to(this.material.uniforms.uBlackGradient, {
+          value: 0.8,
+          duration: 1.5,
+          delay: 1,
+        });
+      } else {
+        GSAP.to(this.material.uniforms.uBlack, {
+          value: 0.22,
+          duration: 1.5,
+        });
+        GSAP.to(this.material.uniforms.uBlackGradient, {
+          value: 0.8,
+          duration: 1.5,
+        });
+      }
     }
     if (template.includes("/detail/")) {
       GSAP.to(this.material.uniforms.uMultiplier, {
