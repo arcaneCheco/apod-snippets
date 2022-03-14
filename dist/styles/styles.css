@@ -493,7 +493,7 @@ html {
   }
 }
 .navigation__list__item a:before {
-  content: "☯";
+  content: "⇲";
   font-size: 3rem;
   vertical-align: middle;
   display: inline-block;

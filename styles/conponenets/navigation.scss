@@ -72,7 +72,8 @@
     transition: text-shadow 0.2s ease-out, color 0.2s ease-out;
 
     &:before {
-      content: "\262F";
+      content: "\21F2";
+      // content: "\262F";
       font-size: 3rem;
       vertical-align: middle;
 
