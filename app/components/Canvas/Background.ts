@@ -1,18 +1,17 @@
 import * as THREE from "three";
 import GSAP from "gsap";
-import vertexShader from "../../shaders/smoke/vertex.glsl";
-import fragmentShader from "../../shaders/smoke/fragment.glsl";
-import e from "express";
+import vertexShader from "../../shaders/background/vertex.glsl";
+import fragmentShader from "../../shaders/background/fragment.glsl";
 
-export default class Smoke {
+export default class Background {
   group;
   geometry: any;
   material: any;
   meshes: any;
-  width;
-  height;
+  width: number;
+  height: number;
   color: any;
-  smokeColor: any;
+  backgroundColor: any;
   mesh: any;
   trail: any;
   fov: any;
@@ -63,7 +62,7 @@ export default class Smoke {
         uDistortion: { value: 0.9 },
         uSpeedXneb: { value: 0.05 },
         uSpeedYneb: { value: 0.05 },
-        uSpeedXsmoke: { value: 0.08 },
+        uSpeedXsmoke: { value: 0.08 }, // just set this in the shader instead of uniform
         uSpeedYsmoke: { value: 0.04 },
         uMultiplier: { value: 1 },
         uColorSpeed: { value: 0.1 },

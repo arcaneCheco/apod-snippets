@@ -1,6 +1,6 @@
 import { Scene, WebGLRenderer, PerspectiveCamera } from "three";
 
-import Smoke from "./Smoke";
+import Background from "./Background";
 import Trail from "./Trail";
 import Home from "./Home";
 import About from "./About";
@@ -26,7 +26,7 @@ export default class Canvas {
   x;
   y;
   active: any;
-  smoke: Smoke;
+  background: Background;
   trail: Trail;
   particles: Particles;
   constructor({ template }: { template: string }) {
@@ -71,8 +71,8 @@ export default class Canvas {
     });
   }
 
-  setSmoke() {
-    this.smoke = new Smoke({
+  setBackground() {
+    this.background = new Background({
       scene: this.scene,
       width: this.width,
       height: this.height,
@@ -131,7 +131,7 @@ export default class Canvas {
 
   onPreloaded() {
     this.setTrail();
-    this.setSmoke();
+    this.setBackground();
     this.setParticles();
     this.setHome();
     this.setAbout();
@@ -144,8 +144,8 @@ export default class Canvas {
   async onChange(template: string) {
     this.active.hide(template);
 
-    this.particles && this.particles.onChange(template);
-    this.smoke && this.smoke.onChange(template);
+    this.particles && this.particles.onChange(template); // try remove conditional
+    this.background && this.background.onChange(template);
     // this.trail && this.trail.onChange(template);
 
     if (template === "/") {
@@ -183,7 +183,7 @@ export default class Canvas {
 
     this.particles.onResize({ width: this.width, height: this.height });
 
-    this.smoke.onResize({ camera: this.camera });
+    this.background.onResize({ camera: this.camera });
 
     !transition &&
       this.detail.onResize({ width: this.width, height: this.height });
@@ -229,7 +229,7 @@ export default class Canvas {
     this.active === this.detail &&
       this.detail.update({ time: this.time, scroll: scroll });
 
-    this.smoke.update(this.time);
+    this.background.update(this.time);
     this.trail.update();
     this.particles.update(this.time);
 

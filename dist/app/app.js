@@ -33062,15 +33062,15 @@ var $980dae104ebd016a$export$99ee26438460406a = $9adc3b62f9b9a789$export$99ee264
 $980dae104ebd016a$export$7b23975ad686bf91 = $980dae104ebd016a$export$99ee26438460406a.core.Tween;
 
 
-var $8776611c13881899$exports = {};
-$8776611c13881899$exports = "#define GLSLIFY 1\nvarying vec2 vUv;\n\nvoid main() {\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);\n    vUv = uv;\n}";
+var $6a1284bd1e6d77d5$exports = {};
+$6a1284bd1e6d77d5$exports = "#define GLSLIFY 1\nvarying vec2 vUv;\n\nvoid main() {\n    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.);\n    vUv = uv;\n}";
 
 
-var $c0e86999a4e0e0ad$exports = {};
-$c0e86999a4e0e0ad$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform float uDistortion;\nuniform sampler2D uTextureN;\nuniform float uSpeedXneb;\nuniform float uSpeedYneb;\nuniform sampler2D uTextureC;\nuniform float uColorSpeed;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uSpeedXsmoke;\nuniform float uSpeedYsmoke;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n";
+var $ade496d0e753374b$exports = {};
+$ade496d0e753374b$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform float uDistortion;\nuniform sampler2D uTextureN;\nuniform float uSpeedXneb;\nuniform float uSpeedYneb;\nuniform sampler2D uTextureC;\nuniform float uColorSpeed;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uSpeedXsmoke;\nuniform float uSpeedYsmoke;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n";
 
 
-class $83e3100a08413060$export$2e2bcd8739ae039 {
+class $0c400d4900c824ad$export$2e2bcd8739ae039 {
     constructor({ scene: scene , width: width , height: height , trail: trail , fov: fov , aspect: aspect , template: template  }){
         this.mouse = new $2d9d8c9fc2282acc$export$c977b3e384af9ae1();
         this.parentWidth = width;
@@ -33094,8 +33094,8 @@ class $83e3100a08413060$export$2e2bcd8739ae039 {
     setMaterial() {
         this.geometry = new $2d9d8c9fc2282acc$export$e789a11a194ca4e0(1, 1);
         this.material = new $2d9d8c9fc2282acc$export$83c7d75d550a8b0d({
-            vertexShader: (/*@__PURE__*/$parcel$interopDefault($8776611c13881899$exports)),
-            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($c0e86999a4e0e0ad$exports)),
+            vertexShader: (/*@__PURE__*/$parcel$interopDefault($6a1284bd1e6d77d5$exports)),
+            fragmentShader: (/*@__PURE__*/$parcel$interopDefault($ade496d0e753374b$exports)),
             depthTest: false,
             uniforms: {
                 uTime: {
@@ -35328,8 +35328,8 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             ratio: this.ratio
         });
     }
-    setSmoke() {
-        this.smoke = new $83e3100a08413060$export$2e2bcd8739ae039({
+    setBackground() {
+        this.background = new $0c400d4900c824ad$export$2e2bcd8739ae039({
             scene: this.scene,
             width: this.width,
             height: this.height,
@@ -35381,7 +35381,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
     }
     onPreloaded() {
         this.setTrail();
-        this.setSmoke();
+        this.setBackground();
         this.setParticles();
         this.setHome();
         this.setAbout();
@@ -35391,8 +35391,8 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
     }
     async onChange(template) {
         this.active.hide(template);
-        this.particles && this.particles.onChange(template);
-        this.smoke && this.smoke.onChange(template);
+        this.particles && this.particles.onChange(template); // try remove conditional
+        this.background && this.background.onChange(template);
         // this.trail && this.trail.onChange(template);
         if (template === "/") {
             this.home.show();
@@ -35431,7 +35431,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             width: this.width,
             height: this.height
         });
-        this.smoke.onResize({
+        this.background.onResize({
             camera: this.camera
         });
         !transition && this.detail.onResize({
@@ -35488,7 +35488,7 @@ class $d4b8791ca621a5a1$export$2e2bcd8739ae039 {
             time: this.time,
             scroll: scroll
         });
-        this.smoke.update(this.time);
+        this.background.update(this.time);
         this.trail.update();
         this.particles.update(this.time);
         this.renderer.render(this.scene, this.camera);
