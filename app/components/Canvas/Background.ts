@@ -59,13 +59,7 @@ export default class Background {
         uTextureN: { value: this.nebulaTexture },
         uTextureC: { value: this.colorPaletteTexture },
         uTrail: { value: this.trail },
-        uDistortion: { value: 0.9 },
-        uSpeedXneb: { value: 0.05 },
-        uSpeedYneb: { value: 0.05 },
-        uSpeedXsmoke: { value: 0.08 }, // just set this in the shader instead of uniform
-        uSpeedYsmoke: { value: 0.04 },
         uMultiplier: { value: 1 },
-        uColorSpeed: { value: 0.1 },
         uBlack: { value: 0.26 },
         uBlackGradient: { value: 0.7 },
         uWhite: { value: 0 },

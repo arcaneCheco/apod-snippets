@@ -33067,7 +33067,7 @@ $6a1284bd1e6d77d5$exports = "#define GLSLIFY 1\nvarying vec2 vUv;\n\nvoid main()
 
 
 var $ade496d0e753374b$exports = {};
-$ade496d0e753374b$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform float uDistortion;\nuniform sampler2D uTextureN;\nuniform float uSpeedXneb;\nuniform float uSpeedYneb;\nuniform sampler2D uTextureC;\nuniform float uColorSpeed;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uSpeedXsmoke;\nuniform float uSpeedYsmoke;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = uDistortion * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(uSpeedXneb, uSpeedYneb), 1.)).rbg;\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*uColorSpeed), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(uSpeedXsmoke, uSpeedYsmoke), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n";
+$ade496d0e753374b$exports = "#define GLSLIFY 1\n#define PI2 6.28318530\n\nuniform float uTime;\nuniform float uAspect;\nuniform sampler2D uTrail;\nuniform sampler2D uTextureN;\nuniform sampler2D uTextureC;\nuniform float uMultiplier;\nuniform sampler2D uTexture;\nuniform float uBlack;\nuniform float uBlackGradient;\nuniform float uWhite;\nuniform vec2 uMouse;\n\nvarying vec2 vUv;\n\nvoid main()\n{\n\tvec2 nUv = vUv - vec2(0.5);\n\tnUv.x *= uAspect;\n\n\tfloat trail = texture2D(uTrail, vUv).r;\n\tfloat a = trail*PI2;\n    vec2 distortion = 0.9 * trail * vec2(sin(a), cos(a));\n    nUv -= distortion*2.*nUv;\n\n\tvec3 color = texture2D(uTextureN, mod(nUv+uTime*vec2(0.05, 0.05), 1.)).rbg;\n\n\tfloat offset = -0.45;\n\n\tvec3 pColor = texture2D(uTextureC, vec2(fract(uTime*0.1), 0.5)).rgb * 0.45;\n\tcolor -= pColor;\n\n\tcolor = color * uMultiplier;\n\n\tfloat strength = texture2D(uTexture, mod(nUv + uTime * vec2(0.08, 0.04), 1.)).r * 0.2;\n\n\tgl_FragColor = vec4(color, strength);\n\n\tfloat dist = abs(nUv.y);\n\tdist = smoothstep(uBlack, uBlackGradient + uBlack, dist);\n\tgl_FragColor += clamp(dist*3., 0. ,1.);\n\tgl_FragColor += vec4(1., 0.2,0.2, 1.5) * trail * 0.3;\n\n\tgl_FragColor = mix(gl_FragColor, vec4(1.), uWhite);\n}\n\n";
 
 
 class $0c400d4900c824ad$export$2e2bcd8739ae039 {
@@ -33116,26 +33116,8 @@ class $0c400d4900c824ad$export$2e2bcd8739ae039 {
                 uTrail: {
                     value: this.trail
                 },
-                uDistortion: {
-                    value: 0.9
-                },
-                uSpeedXneb: {
-                    value: 0.05
-                },
-                uSpeedYneb: {
-                    value: 0.05
-                },
-                uSpeedXsmoke: {
-                    value: 0.08
-                },
-                uSpeedYsmoke: {
-                    value: 0.04
-                },
                 uMultiplier: {
                     value: 1
-                },
-                uColorSpeed: {
-                    value: 0.1
                 },
                 uBlack: {
                     value: 0.26
