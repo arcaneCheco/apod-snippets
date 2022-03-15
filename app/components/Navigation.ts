@@ -107,7 +107,6 @@ export default class Navigation extends Component {
 
   toggle() {
     if (this.isOpen) {
-      this.emit("close nav");
       this.close();
     } else {
       this.emit("open nav");
@@ -117,7 +116,6 @@ export default class Navigation extends Component {
 
   onMouseEnter() {
     if (!this.isOpen) {
-      this.emit("enter nav icon");
       GSAP.to(this.elements.iconPath, {
         duration: 0.5,
         attr: {

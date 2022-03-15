@@ -17,11 +17,8 @@ import Footer from "./components/Footer";
 import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 
 // TODO
-// get correct audio sources
-// reduce audio file sizes
-// favicon
+// sort links out
 // clean up typescript
-// file names on prismic
 // DONE
 
 import Sound from "./components/Sound";
@@ -71,23 +68,14 @@ class App {
     this.navigation.on("open nav", () => {
       this.sound.onOpenNav();
     });
-    this.navigation.on("close nav", () => {
-      this.sound.onCloseNav();
-    });
-    this.navigation.on("enter nav icon", () => {
-      this.sound.onEnterNavIcon();
-    });
     this.canvas.particles.on("vibrate particles start", () => {
       this.sound.onVibrateParticlesStart();
     });
     this.canvas.particles.on("vibrate particles end", () => {
       this.sound.onVibrateParticlesEnd();
     });
-    this.canvas.detail.on("enter fullscreen", () => {
-      this.sound.onEnterFullscreen();
-    });
-    this.canvas.detail.on("exit fullscreen", () => {
-      this.sound.onExitFullscreen();
+    this.canvas.detail.on("fullscreen sound", () => {
+      this.sound.onFullscreenToggle();
     });
     this.preloader.on("enter site", () => {
       this.sound.enableSound();

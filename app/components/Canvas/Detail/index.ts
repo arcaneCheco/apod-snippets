@@ -439,11 +439,10 @@ export default class Detail extends EventEmitter {
   }
 
   fullscreenTransition() {
+    this.emit("fullscreen sound");
     if (this.isFullscreen) {
-      this.emit("exit fullscreen");
       this.exitFullscreen();
     } else {
-      this.emit("enter fullscreen");
       this.enterFullscreen();
     }
     this.isFullscreen = !this.isFullscreen;

@@ -34903,13 +34903,9 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         });
     }
     fullscreenTransition() {
-        if (this.isFullscreen) {
-            this.emit("exit fullscreen");
-            this.exitFullscreen();
-        } else {
-            this.emit("enter fullscreen");
-            this.enterFullscreen();
-        }
+        this.emit("fullscreen sound");
+        if (this.isFullscreen) this.exitFullscreen();
+        else this.enterFullscreen();
         this.isFullscreen = !this.isFullscreen;
     }
     debounce(func, timeout = 100) {
@@ -36723,24 +36719,19 @@ class $4eaaa227927a9fce$export$2e2bcd8739ae039 extends $ea0b881b56c5595f$export$
         });
     }
     toggle() {
-        if (this.isOpen) {
-            this.emit("close nav");
-            this.close();
-        } else {
+        if (this.isOpen) this.close();
+        else {
             this.emit("open nav");
             this.open();
         }
     }
     onMouseEnter() {
-        if (!this.isOpen) {
-            this.emit("enter nav icon");
-            $980dae104ebd016a$export$99ee26438460406a.to(this.elements.iconPath, {
-                duration: 0.5,
-                attr: {
-                    d: this.elements.iconPath.getAttribute("data-d-hover")
-                }
-            });
-        }
+        if (!this.isOpen) $980dae104ebd016a$export$99ee26438460406a.to(this.elements.iconPath, {
+            duration: 0.5,
+            attr: {
+                d: this.elements.iconPath.getAttribute("data-d-hover")
+            }
+        });
     }
     onMouseLeave() {
         if (!this.isOpen) $980dae104ebd016a$export$99ee26438460406a.to(this.elements.iconPath, {
@@ -38889,7 +38880,9 @@ class $25c46615606f4f8d$export$2e2bcd8739ae039 {
         if (this.isDisabled) return;
         if (from === "/" && to === "/snippets") {
             this.medias["homeToSnippets"].currentTime = 0;
-            this.medias["homeToSnippets"].play();
+            window.setTimeout(()=>{
+                this.medias["homeToSnippets"].play();
+            }, 400);
         }
         if (from === "/snippets" && to === "/") {
             this.medias["snippetsToHome"].currentTime = 0;
@@ -38917,16 +38910,6 @@ class $25c46615606f4f8d$export$2e2bcd8739ae039 {
         this.medias["openNav"].currentTime = 0;
         this.medias["openNav"].play();
     }
-    onCloseNav() {
-        if (this.isDisabled) return;
-        this.medias["closeNav"].currentTime = 0;
-        this.medias["closeNav"].play();
-    }
-    onEnterNavIcon() {
-        if (this.isDisabled) return;
-        this.medias["navIconEnter"].currentTime = 0;
-        this.medias["navIconEnter"].play();
-    }
     onVibrateParticlesStart() {
         if (this.isDisabled) return;
         this.medias["particleVibration"].currentTime = 0;
@@ -38936,12 +38919,7 @@ class $25c46615606f4f8d$export$2e2bcd8739ae039 {
         if (this.isDisabled) return;
         this.medias["particleVibration"].pause();
     }
-    onEnterFullscreen() {
-        if (this.isDisabled) return;
-        this.medias["fullscreen"].currentTime = 0;
-        this.medias["fullscreen"].play();
-    }
-    onExitFullscreen() {
+    onFullscreenToggle() {
         if (this.isDisabled) return;
         this.medias["fullscreen"].currentTime = 0;
         this.medias["fullscreen"].play();
@@ -38979,23 +38957,14 @@ class $0c8eb68a78c8b2f7$var$App {
         this.navigation.on("open nav", ()=>{
             this.sound.onOpenNav();
         });
-        this.navigation.on("close nav", ()=>{
-            this.sound.onCloseNav();
-        });
-        this.navigation.on("enter nav icon", ()=>{
-            this.sound.onEnterNavIcon();
-        });
         this.canvas.particles.on("vibrate particles start", ()=>{
             this.sound.onVibrateParticlesStart();
         });
         this.canvas.particles.on("vibrate particles end", ()=>{
             this.sound.onVibrateParticlesEnd();
         });
-        this.canvas.detail.on("enter fullscreen", ()=>{
-            this.sound.onEnterFullscreen();
-        });
-        this.canvas.detail.on("exit fullscreen", ()=>{
-            this.sound.onExitFullscreen();
+        this.canvas.detail.on("fullscreen sound", ()=>{
+            this.sound.onFullscreenToggle();
         });
         this.preloader.on("enter site", ()=>{
             this.sound.enableSound();

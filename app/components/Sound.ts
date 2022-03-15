@@ -37,7 +37,9 @@ export default class Sound {
     if (this.isDisabled) return;
     if (from === "/" && to === "/snippets") {
       this.medias["homeToSnippets"].currentTime = 0;
-      this.medias["homeToSnippets"].play();
+      window.setTimeout(() => {
+        this.medias["homeToSnippets"].play();
+      }, 400);
     }
     if (from === "/snippets" && to === "/") {
       this.medias["snippetsToHome"].currentTime = 0;
@@ -67,18 +69,6 @@ export default class Sound {
     this.medias["openNav"].play();
   }
 
-  onCloseNav() {
-    if (this.isDisabled) return;
-    this.medias["closeNav"].currentTime = 0;
-    this.medias["closeNav"].play();
-  }
-
-  onEnterNavIcon() {
-    if (this.isDisabled) return;
-    this.medias["navIconEnter"].currentTime = 0;
-    this.medias["navIconEnter"].play();
-  }
-
   onVibrateParticlesStart() {
     if (this.isDisabled) return;
     this.medias["particleVibration"].currentTime = 0;
@@ -90,13 +80,7 @@ export default class Sound {
     this.medias["particleVibration"].pause();
   }
 
-  onEnterFullscreen() {
-    if (this.isDisabled) return;
-    this.medias["fullscreen"].currentTime = 0;
-    this.medias["fullscreen"].play();
-  }
-
-  onExitFullscreen() {
+  onFullscreenToggle() {
     if (this.isDisabled) return;
     this.medias["fullscreen"].currentTime = 0;
     this.medias["fullscreen"].play();
