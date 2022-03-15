@@ -24,7 +24,6 @@ html(class=isDesktop ? "desktop" : isTablet ? "tablet" : isPhone ? "phone" : "" 
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
 
     link(rel="stylesheet" type="text/css" href="/styles/styles.css")
-    //- link(rel="shortcut icon" href="#")
   body 
     include ./partials/preloader.pug
     include ./pages/home.pug
@@ -44,4 +43,4 @@ html(class=isDesktop ? "desktop" : isTablet ? "tablet" : isPhone ? "phone" : "" 
     script.
       window.SOUND_ASSETS = !{JSON.stringify(sounds).replace(/<\//g, "<\\/")}
 
-    script(type="module" src="/app/app.js")
+    script(src="/app/app.js")

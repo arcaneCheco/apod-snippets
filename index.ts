@@ -1,30 +1,28 @@
-require("dotenv").config();
-const express = require("express");
-const Prismic = require("@prismicio/client");
-const PrismicDOM = require("prismic-dom");
-const UAParser = require("ua-parser-js");
+import express, { Request } from "express";
+import dotenv from "dotenv";
+import Prismic from "@prismicio/client";
+import ResolvedApi from "@prismicio/client/types/ResolvedApi";
+import PrismicDOM from "prismic-dom";
+import UAParser from "ua-parser-js";
 
+dotenv.config();
 const app = express();
 const PORT = 3000;
 
-//_dirname
 app.use(express.static(`${__dirname}/dist`));
 
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
 
-// const initApi = (req: Request) => {
-const initApi = (req: any) => {
+const initApi = (req: Request) => {
   return Prismic.getApi(process.env.PRISMIC_ENDPOINT!, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
     req,
   });
 };
 
-// const handleRequest = async (api: ResolvedApi) => {
-const handleRequest = async (api: any) => {
+const handleRequest = async (api: ResolvedApi) => {
   const meta = await api.getSingle("meta");
-  console.log(meta);
 
   const home = await api.getSingle("home");
 
@@ -74,7 +72,7 @@ const handleRequest = async (api: any) => {
   };
 };
 
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   const ua = UAParser(req.headers["user-agent"]);
 
   res.locals.isDesktop = ua.device.type === undefined;
@@ -86,31 +84,7 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-app.get("/", async (req: any, res: any) => {
-  const api = await initApi(req);
-  const defaults = await handleRequest(api);
-  res.render("views", {
-    ...defaults,
-  });
-});
-
-app.get("/about", async (req: any, res: any) => {
-  const api = await initApi(req);
-  const defaults = await handleRequest(api);
-  res.render("views", {
-    ...defaults,
-  });
-});
-
-app.get("/snippets", async (req: any, res: any) => {
-  const api = await initApi(req);
-  const defaults = await handleRequest(api);
-  res.render("views", {
-    ...defaults,
-  });
-});
-
-app.get("/detail/:uid", async (req: any, res: any) => {
+app.get(["/", "/about", "/snippets", "/detail/:uid"], async (req, res) => {
   const api = await initApi(req);
   const defaults = await handleRequest(api);
   res.render("views", {
@@ -119,7 +93,7 @@ app.get("/detail/:uid", async (req: any, res: any) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`);
+  console.log(`Listening at http://localhost:${PORT}`);
 });
 
 module.exports = app;
