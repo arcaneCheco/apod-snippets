@@ -25,6 +25,7 @@ import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 // DONE
 
 import Sound from "./components/Sound";
+import Detection from "./classes/Detection";
 
 class App {
   template: string;
@@ -330,7 +331,7 @@ class App {
     window.addEventListener("wheel", this.onWheel);
     window.addEventListener("mousedown", this.onTouchDown);
     window.addEventListener("mousemove", this.onTouchMove);
-    window.addEventListener("mouseup", this.onTouchUp);
+    Detection.isDesktop() && window.addEventListener("mouseup", this.onTouchUp);
 
     window.addEventListener("touchstart", this.onTouchDown);
     window.addEventListener("touchmove", this.onTouchMove);

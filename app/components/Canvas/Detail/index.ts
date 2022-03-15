@@ -74,10 +74,13 @@ export default class Detail extends EventEmitter {
   isFullscreen: boolean;
   isTransitioning: boolean;
   touchStart = new Vector2();
+  touchStartTime: number;
+  time: number;
   orbitControlEnabled = false;
   snippetRefElement = document.querySelector(".snippets__gallery")!;
   transitionStartPosition: number;
   transitionStartPositionDepth: number;
+  fullscreenTransitionDebounce;
   constructor({ scene, template, camera }: any) {
     super();
     this.scene = scene;
@@ -95,6 +98,10 @@ export default class Detail extends EventEmitter {
     Detection.isDesktop() && this.setMirror();
 
     this.onResize({ width: this.width, height: this.height });
+
+    this.fullscreenTransitionDebounce = this.debounce(
+      this.fullscreenTransition
+    );
   }
 
   fromSnippetsTransition(time: number) {
@@ -442,6 +449,16 @@ export default class Detail extends EventEmitter {
     this.isFullscreen = !this.isFullscreen;
   }
 
+  debounce(func, timeout = 100) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(this, args);
+      }, timeout);
+    };
+  }
+
   updateRaycaster(coords: { x: number; y: number }) {
     this.raycaster.setFromCamera(coords, this.camera);
     const intersect = this.raycaster.intersectObject(this.mesh);
@@ -470,6 +487,8 @@ export default class Detail extends EventEmitter {
       this.orbitControlEnabled = true;
       this.orbitControl.current.set(x, y);
       this.orbitControl.target.set(x, y);
+
+      !Detection.isDesktop() && (this.touchStartTime = this.time);
     } else {
       this.orbitControlEnabled = false;
     }
@@ -485,13 +504,20 @@ export default class Detail extends EventEmitter {
 
   onTouchUp({ x, y }: { x: number; y: number }) {
     if (this.orbitControlEnabled) {
-      const overMesh = this.updateRaycaster({
-        x: 2 * (x / this.width) - 1,
-        y: -2 * (y / this.height) + 1,
-      });
-      if (overMesh) {
-        const xx = this.touchStart.distanceTo(new Vector2(x, y));
-        if (xx < 2) {
+      if (Detection.isDesktop()) {
+        const overMesh = this.updateRaycaster({
+          x: 2 * (x / this.width) - 1,
+          y: -2 * (y / this.height) + 1,
+        });
+        if (overMesh) {
+          const xx = this.touchStart.distanceTo(new Vector2(x, y));
+          if (xx < 2) {
+            this.fullscreenTransition();
+          }
+        }
+      } else {
+        console.log("DIFF: ", this.time - this.touchStartTime);
+        if (this.time - this.touchStartTime < 0.11) {
           this.fullscreenTransition();
         }
       }
@@ -587,6 +613,7 @@ export default class Detail extends EventEmitter {
   }
 
   update({ scroll, time }: any) {
+    this.time = time;
     this.updateDefaultMaterial(time);
 
     if (!this.isTransitioning) {

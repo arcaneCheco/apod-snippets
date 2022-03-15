@@ -34611,6 +34611,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
             width: this.width,
             height: this.height
         });
+        this.fullscreenTransitionDebounce = this.debounce(this.fullscreenTransition);
     }
     fromSnippetsTransition(time) {
         this.isTransitioning = true;
@@ -34911,6 +34912,15 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         }
         this.isFullscreen = !this.isFullscreen;
     }
+    debounce(func, timeout = 100) {
+        let timer;
+        return (...args)=>{
+            clearTimeout(timer);
+            timer = setTimeout(()=>{
+                func.apply(this, args);
+            }, timeout);
+        };
+    }
     updateRaycaster(coords) {
         this.raycaster.setFromCamera(coords, this.camera);
         const intersect = this.raycaster.intersectObject(this.mesh);
@@ -34937,6 +34947,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
             this.orbitControlEnabled = true;
             this.orbitControl.current.set(x, y);
             this.orbitControl.target.set(x, y);
+            !$77ffb9f622074fa6$export$2e2bcd8739ae039.isDesktop() && (this.touchStartTime = this.time);
         } else this.orbitControlEnabled = false;
     }
     onTouchMove({ x: x , y: y  }) {
@@ -34948,13 +34959,18 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
     }
     onTouchUp({ x: x , y: y  }) {
         if (this.orbitControlEnabled) {
-            const overMesh = this.updateRaycaster({
-                x: 2 * (x / this.width) - 1,
-                y: -2 * (y / this.height) + 1
-            });
-            if (overMesh) {
-                const xx = this.touchStart.distanceTo(new $2d9d8c9fc2282acc$export$c977b3e384af9ae1(x, y));
-                if (xx < 2) this.fullscreenTransition();
+            if ($77ffb9f622074fa6$export$2e2bcd8739ae039.isDesktop()) {
+                const overMesh = this.updateRaycaster({
+                    x: 2 * (x / this.width) - 1,
+                    y: -2 * (y / this.height) + 1
+                });
+                if (overMesh) {
+                    const xx = this.touchStart.distanceTo(new $2d9d8c9fc2282acc$export$c977b3e384af9ae1(x, y));
+                    if (xx < 2) this.fullscreenTransition();
+                }
+            } else {
+                console.log("DIFF: ", this.time - this.touchStartTime);
+                if (this.time - this.touchStartTime < 0.11) this.fullscreenTransition();
             }
             if (this.isFullscreen) {
                 const frontFaceIndex = this.getFrontFace();
@@ -35024,6 +35040,7 @@ class $5422d6f90a02ee3a$export$2e2bcd8739ae039 extends (/*@__PURE__*/$parcel$int
         this.defaultMaterial.uniforms.uC.value = Math.sin(time);
     }
     update({ scroll: scroll , time: time  }) {
+        this.time = time;
         this.updateDefaultMaterial(time);
         if (!this.isTransitioning) {
             if (!this.isFullscreen) this.defaultMotionUpdate(time);
@@ -38932,6 +38949,7 @@ class $25c46615606f4f8d$export$2e2bcd8739ae039 {
 }
 
 
+
 class $0c8eb68a78c8b2f7$var$App {
     constructor(){
         this.isDown = false;
@@ -39186,7 +39204,7 @@ class $0c8eb68a78c8b2f7$var$App {
         window.addEventListener("wheel", this.onWheel);
         window.addEventListener("mousedown", this.onTouchDown);
         window.addEventListener("mousemove", this.onTouchMove);
-        window.addEventListener("mouseup", this.onTouchUp);
+        $77ffb9f622074fa6$export$2e2bcd8739ae039.isDesktop() && window.addEventListener("mouseup", this.onTouchUp);
         window.addEventListener("touchstart", this.onTouchDown);
         window.addEventListener("touchmove", this.onTouchMove);
         window.addEventListener("touchend", this.onTouchUp);
