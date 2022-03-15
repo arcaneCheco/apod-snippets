@@ -1,10 +1,3 @@
-// import dotenv from "dotenv";
-// import express, { Request } from "express";
-// import Prismic from "@prismicio/client";
-// import ResolvedApi from "@prismicio/client/types/ResolvedApi";
-// import PrismicDOM from "prismic-dom";
-// import UAParser from "ua-parser-js";
-// dotenv.config();
 require("dotenv").config();
 const express = require("express");
 const Prismic = require("@prismicio/client");
@@ -30,6 +23,9 @@ const initApi = (req: any) => {
 
 // const handleRequest = async (api: ResolvedApi) => {
 const handleRequest = async (api: any) => {
+  const meta = await api.getSingle("meta");
+  console.log(meta);
+
   const home = await api.getSingle("home");
 
   const snippets = await api.getSingle("snippets", { fetchLinks: "pod.index" });
@@ -68,6 +64,7 @@ const handleRequest = async (api: any) => {
   });
 
   return {
+    meta,
     home,
     snippets,
     pods,

@@ -17,7 +17,8 @@ html(class=isDesktop ? "desktop" : isTablet ? "tablet" : isPhone ? "phone" : "" 
 
     base(href="/")
 
-    title Snippets
+    title=meta.data.title
+    meta(name="description" content=meta.data.description)
 
     script.
       document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
