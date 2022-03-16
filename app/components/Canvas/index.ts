@@ -74,8 +74,6 @@ export default class Canvas {
   setBackground() {
     this.background = new Background({
       scene: this.scene,
-      width: this.width,
-      height: this.height,
       trail: this.trail.texture,
       fov: this.camera.fov,
       aspect: this.camera.aspect,

@@ -1,54 +1,63 @@
-import * as THREE from "three";
+import {
+  Scene,
+  Group,
+  Texture,
+  PlaneGeometry,
+  ShaderMaterial,
+  Mesh,
+} from "three";
 import GSAP from "gsap";
+
+// @ts-ignore
 import vertexShader from "../../shaders/background/vertex.glsl";
+// @ts-ignore
 import fragmentShader from "../../shaders/background/fragment.glsl";
 
 export default class Background {
-  group;
-  geometry: any;
-  material: any;
-  meshes: any;
+  template: string;
+  fov: number;
+  aspect: number;
   width: number;
   height: number;
+  group = new Group();
+  trail: Texture;
+  fogTexture = window.TEXTURES.fog;
+  nebulaTexture = window.TEXTURES.nebula;
+  colorPaletteTexture = window.TEXTURES.palette;
+  geometry: PlaneGeometry;
+  material: ShaderMaterial;
+  meshes: any;
   color: any;
   backgroundColor: any;
   mesh: any;
-  trail: any;
-  fov: any;
-  aspect: any;
-  parentWidth: any;
-  parentHeight: any;
-  template: any;
-  fogTexture: any;
-  nebulaTexture: any;
-  colorPaletteTexture: THREE.Texture;
-  mouse: THREE.Vector2 = new THREE.Vector2();
-  constructor({ scene, width, height, trail, fov, aspect, template }: any) {
-    this.parentWidth = width;
-    this.parentHeight = height;
+  constructor({
+    scene,
+    trail,
+    fov,
+    aspect,
+    template,
+  }: {
+    scene: Scene;
+    trail: Texture;
+    fov: number;
+    aspect: number;
+    template: string;
+  }) {
     this.template = template;
     this.fov = fov;
     this.aspect = aspect;
     this.height = 7000 * Math.tan((fov * Math.PI) / 360);
     this.width = this.height * aspect;
-    this.group = new THREE.Group();
     scene.add(this.group);
 
     this.trail = trail;
 
-    this.setTextures();
-    this.setMaterial();
+    this.setMesh();
   }
 
-  setTextures() {
-    this.fogTexture = window.TEXTURES.fog;
-    this.nebulaTexture = window.TEXTURES.nebula;
-    this.colorPaletteTexture = window.TEXTURES.palette;
-  }
-
-  setMaterial() {
-    this.geometry = new THREE.PlaneGeometry(1, 1);
-    this.material = new THREE.ShaderMaterial({
+  setMesh() {
+    this.geometry = new PlaneGeometry(1, 1);
+    this.material = new ShaderMaterial({
       vertexShader,
       fragmentShader,
       depthTest: false,
@@ -66,7 +75,7 @@ export default class Background {
       },
       transparent: true,
     });
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
     this.mesh.renderOrder = -10;
     this.mesh.position.z = -3000;
     this.mesh.scale.set(this.width, this.height, 1);

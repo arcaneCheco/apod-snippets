@@ -1,4 +1,3 @@
-import Detection from "../../classes/Detection";
 import {
   Texture,
   Scene,
@@ -86,7 +85,7 @@ export default class Trail {
     }
   }
 
-  addTouch(x: any, y: any, index: any) {
+  addTouch(x: number, y: number, index: number) {
     let mesh = this.trail[index];
     mesh.visible = true;
     mesh.position.x = x;
@@ -108,16 +107,15 @@ export default class Trail {
     this.position.y = -y + this.height / 2;
   }
 
-  onChange(template: string) {
-    // if (Detection.isDesktop()) return;
-    // if (template !== "/") {
-    //   this.pause = true;
-    // } else {
-    //   this.pause = false;
-    // }
-  }
-
-  onResize({ width, height, ratio }: any) {
+  onResize({
+    width,
+    height,
+    ratio,
+  }: {
+    width: number;
+    height: number;
+    ratio: number;
+  }) {
     this.width = width;
     this.height = height;
     this.target.setSize(this.width, this.height);

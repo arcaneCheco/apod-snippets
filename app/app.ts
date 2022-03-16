@@ -14,10 +14,16 @@ import Icon from "./components/Icon";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 
+// @ts-ignore
 import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 
 import Sound from "./components/Sound";
 import Detection from "./classes/Detection";
+
+// TODO
+// change touchevent types
+// use more sensible values for render order
+// bring background closer to camera
 
 class App {
   template: string;

@@ -8,9 +8,11 @@ import {
   Points,
 } from "three";
 import GSAP from "gsap";
-import vertexShader from "../../shaders/particles/vertex.glsl";
-import fragmentShader from "../../shaders/particles/fragment.glsl";
 import EventEmitter from "events";
+// @ts-ignore
+import vertexShader from "../../shaders/particles/vertex.glsl";
+// @ts-ignore
+import fragmentShader from "../../shaders/particles/fragment.glsl";
 
 export default class Particles extends EventEmitter {
   template: string;
@@ -22,12 +24,11 @@ export default class Particles extends EventEmitter {
   textureWidth = 512;
   textureHeight = 256;
   numPoints: number;
-  imgData: any;
+  imgData: Float32Array;
   threshold = 1;
   numVisible = 0;
   geometry = new BufferGeometry();
-  material: any;
-  debug: any;
+  material: ShaderMaterial;
   mesh: Points;
   touchStart = new Vector2();
   rotation: { current: Vector2; target: Vector2 } = {
@@ -195,7 +196,7 @@ export default class Particles extends EventEmitter {
     }
   }
 
-  onChange(template: any) {
+  onChange(template: string) {
     this.template = template;
     if (template === "/") {
       this.mesh.visible = true;
