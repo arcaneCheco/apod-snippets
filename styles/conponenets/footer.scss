@@ -22,7 +22,6 @@
   @include media("<phone") {
     height: 3.5rem;
     padding: 0.5rem;
-    // padding-bottom: 0;
   }
   display: flex;
   pointer-events: all;
@@ -80,6 +79,5 @@
   align-items: center;
   & > svg {
     height: 100%;
-    // width: 80%;
   }
 }
