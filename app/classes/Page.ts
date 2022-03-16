@@ -51,7 +51,7 @@ export default class Page extends Component {
     this.transform(this.elements.wrapper, value);
   }
 
-  transform(element: HTMLElement, y: number) {
+  transform(element: HTMLElement | SVGPathElement, y: number) {
     element.style.transform = `translate3d(0,${-Math.round(y)}px,0)`;
   }
 

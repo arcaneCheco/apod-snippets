@@ -9,13 +9,20 @@ type StrictUnion<T> = StrictUnionHelper<T, T>;
 
 export type MainSelector = string | HTMLElement;
 export interface OtherSelectors {
-  [key: string]: MainSelector | NodeListOf<HTMLElement>;
-  wrapper: MainSelector | NodeListOf<HTMLElement>;
+  [key: string]:
+    | MainSelector
+    | SVGPathElement
+    | NodeListOf<HTMLElement | SVGPathElement>;
+  wrapper: MainSelector | SVGPathElement;
 }
 
-type SelectedChild = StrictUnion<HTMLElement | NodeListOf<HTMLElement>>;
+type SelectedChild = StrictUnion<
+  | HTMLElement
+  | SVGPathElement
+  | NodeListOf<StrictUnion<HTMLElement | SVGPathElement>>
+>;
 type SelectedChildren = Record<string, SelectedChild> & {
-  wrapper: HTMLElement;
+  wrapper: HTMLElement | SVGPathElement;
 };
 
 export default class Component extends EventEmitter {

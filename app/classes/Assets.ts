@@ -12,9 +12,8 @@ declare global {
 }
 
 export default class Assets extends EventEmitter {
-  length = 0;
-  progress: any;
-  numAssets: any;
+  numLoaded = 0;
+  numAssets: number;
   loader = new KTX2Loader();
   constructor(renderer: any) {
     super();
@@ -49,8 +48,8 @@ export default class Assets extends EventEmitter {
   }
 
   onAssetLoaded(name: string) {
-    this.length += 1;
-    const progress = this.length / this.numAssets;
+    this.numLoaded += 1;
+    const progress = this.numLoaded / this.numAssets;
     this.emit("asset loaded", progress, name);
     if (progress === 1) {
       this.emit("all assets loaded");

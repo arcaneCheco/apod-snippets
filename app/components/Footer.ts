@@ -9,6 +9,7 @@ export default class Footer extends Component {
     super({
       element: ".footer",
       elements: {
+        wrapper: ".footer__wrapper",
         soundIconWrapper: ".footer__sound",
         soundIcon: ".footer__sound__icon__path",
         socialToggle: ".footer__social__icon__path",

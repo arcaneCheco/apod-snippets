@@ -2,11 +2,11 @@ import Component from "../classes/Component";
 import GSAP from "gsap";
 
 export default class Preloader extends Component {
-  template: any;
-  width;
-  height;
+  template: string;
+  width: number;
+  height: number;
   spotlight: gsap.core.Tween;
-  constructor({ template }: any) {
+  constructor({ template }: { template: string }) {
     super({
       element: ".preloader",
       elements: {

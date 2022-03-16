@@ -4,7 +4,7 @@ import Detection from "../classes/Detection";
 
 export default class Icon extends Component {
   progress: number;
-  paths: any;
+  paths: { element: SVGPathElement; pathLength: number }[] = [];
   template: string;
   constructor({ template }: { template: string }) {
     super({
@@ -29,18 +29,18 @@ export default class Icon extends Component {
   }
 
   setPaths() {
-    this.paths = [...this.elements.paths].map((element: any) => {
+    this.elements.paths.forEach((element) => {
       const pathLength = element.getTotalLength();
       GSAP.set(element, {
         strokeDashoffset: pathLength,
         strokeDasharray: `${pathLength} ${pathLength}`,
       });
-      return { element, pathLength };
+      this.paths.push({ element: element as SVGPathElement, pathLength });
     });
   }
 
   onAssetLoaded(percent: number) {
-    this.paths.forEach((path: any) => {
+    this.paths.forEach((path) => {
       GSAP.to(path.element, {
         strokeDashoffset: (1 - percent) * path.pathLength,
         duration: 3 * percent,
@@ -54,14 +54,12 @@ export default class Icon extends Component {
       duration: 12,
       repeat: -1,
       svgOrigin: "32 32",
-      // ease: "none",
     });
     GSAP.to(this.elements.inner, {
       rotation: -360,
       duration: 8,
       repeat: -1,
       svgOrigin: "32 32",
-      // ease: "none",
     });
     GSAP.to(this.elements.white, {
       attr: {
@@ -137,7 +135,6 @@ export default class Icon extends Component {
         top: "10%",
         left: "0",
         right: "",
-        // left: "1rem",
       });
       GSAP.fromTo(
         this.elements.svg,
@@ -178,7 +175,7 @@ export default class Icon extends Component {
           ease: "back.out(1.4)",
         });
       }
-      window.setTimeout(() => resolve(), 1000);
+      window.setTimeout(resolve, 1001);
     });
   }
 

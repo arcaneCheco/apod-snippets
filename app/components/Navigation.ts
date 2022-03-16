@@ -3,12 +3,12 @@ import Detection from "../classes/Detection";
 import GSAP from "gsap";
 
 export default class Navigation extends Component {
-  progress: any;
-  isOpen;
+  isOpen = false;
   constructor() {
     super({
       element: ".navigation",
       elements: {
+        wrapper: ".navigation__wrapper",
         listWrapper: ".navigation__list__wrapper",
         list: ".navigation__list",
         listItems: ".navigation__list__item",
@@ -18,8 +18,6 @@ export default class Navigation extends Component {
         iconPath: ".navigation__icon__path",
       },
     });
-
-    this.isOpen = false;
 
     GSAP.set(this.elements.iconPath, {
       attr: {

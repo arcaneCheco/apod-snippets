@@ -38,8 +38,4 @@ class Detection {
   }
 }
 
-//   const DetectionManager = new Detection()
-
-//   export default DetectionManager
-
 export default new Detection();
