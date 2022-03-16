@@ -2,14 +2,7 @@
   "name": "apod-simple",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-    "dev": "npx nodemon ./index.ts",
-    "build:app": "npx parcel build ./app/app.ts --dist-dir dist/app --no-optimize --no-source-maps",
-    "build:style": "npx parcel build ./styles/styles.scss --dist-dir dist/styles --no-optimize --no-source-maps",
-    "build:prod": "npx parcel build ./app/app.ts ./styles/styles.scss",
-    "watch:app": "watch 'npm run build:app' ./app",
-    "watch:style": "watch 'npm run build:style' ./styles"
-  },
+  "scripts": {},
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -20,6 +13,7 @@
     "gsap": "^3.9.1",
     "normalize-wheel": "^1.0.1",
     "prismic-dom": "^2.2.6",
+    "pug": "^3.0.2",
     "three": "^0.136.0",
     "ua-parser-js": "^1.0.2"
   },
@@ -41,7 +35,6 @@
     "include-media": "^1.4.10",
     "nodemon": "^2.0.15",
     "parcel": "^2.3.2",
-    "pug": "^3.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4",
     "watch": "^1.0.2"
