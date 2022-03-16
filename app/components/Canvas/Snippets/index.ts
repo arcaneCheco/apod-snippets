@@ -203,7 +203,7 @@ export default class Snippets extends EventEmitter {
     });
   }
 
-  hide(template: any) {
+  hide(template: string) {
     if (template === "/") {
       this.toHomeTransition();
     } else if (template.includes("/detail/")) {
@@ -247,12 +247,12 @@ export default class Snippets extends EventEmitter {
     }
   }
 
-  onTouchDown({ x, y }: { x: number; y: number }) {
+  onTouchDown(x: number) {
     this.touchStart = x;
     this.scroll.start = this.scroll.current;
   }
 
-  onTouchMove({ x, y }: { x: number; y: number }) {
+  onTouchMove(x: number) {
     const distance = this.touchStart - x;
     if (Math.abs(distance) > 1) {
       this.mediaLinks[this.index].classList.add(
@@ -312,9 +312,7 @@ export default class Snippets extends EventEmitter {
       Math.sign(discrepancy);
 
     this.medias.forEach((media) => {
-      media.update({
-        scroll: this.scroll.current,
-      });
+      media.update(this.scroll.current);
 
       const deltaZ = Math.cos(
         Math.PI *

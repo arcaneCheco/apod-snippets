@@ -116,8 +116,6 @@ export default class Canvas {
   setDetail() {
     this.detail = new Detail({
       scene: this.scene,
-      width: this.width,
-      height: this.height,
       template: this.template,
       camera: this.camera,
     });
@@ -142,9 +140,8 @@ export default class Canvas {
   async onChange(template: string) {
     this.active.hide(template);
 
-    this.particles.onChange(template); // try remove conditional
+    this.particles.onChange(template);
     this.background.onChange(template);
-    // this.trail && this.trail.onChange(template);
 
     if (template === "/") {
       this.home.show();
@@ -181,8 +178,7 @@ export default class Canvas {
 
     this.background.onResize({ camera: this.camera });
 
-    !transition &&
-      this.detail.onResize({ width: this.width, height: this.height });
+    !transition && this.detail.onResize();
     !transition &&
       this.snippets.onResize({ width: this.width, height: this.height });
   }
@@ -192,15 +188,13 @@ export default class Canvas {
   }
 
   onTouchDown({ x, y }: { x: number; y: number }) {
-    this.active === this.snippets && this.snippets.onTouchDown({ x, y });
+    this.active === this.snippets && this.snippets.onTouchDown(x);
 
     this.active == this.detail && this.detail.onTouchDown({ x, y });
   }
 
   onTouchMove({ x, y, isDown }: { x: number; y: number; isDown: boolean }) {
-    this.active === this.snippets &&
-      isDown &&
-      this.snippets.onTouchMove({ x, y });
+    this.active === this.snippets && isDown && this.snippets.onTouchMove(x);
 
     this.active === this.detail &&
       this.detail.onTouchMove({

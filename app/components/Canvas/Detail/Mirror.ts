@@ -1,15 +1,24 @@
-import * as THREE from "three";
+import {
+  Mesh,
+  BufferGeometry,
+  ShaderMaterial,
+  Group,
+  Vector3,
+  Object3D,
+  PlaneGeometry,
+  sRGBEncoding,
+} from "three";
 import { Reflector } from "three/examples/jsm/objects/Reflector";
 import GSAP from "gsap";
 
 export default class Mirror {
-  mesh: THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>;
+  mesh: Mesh<BufferGeometry, ShaderMaterial>;
   width: number;
   height: number;
-  parent: THREE.Group;
-  timeline: GSAPTimeline;
-  origin: THREE.Vector3;
-  dummy: THREE.Object3D;
+  parent: Group;
+  timeline: GSAPTimeline = GSAP.timeline();
+  origin: Vector3;
+  dummy: Object3D;
   progress: number;
   constructor({
     width,
@@ -18,25 +27,25 @@ export default class Mirror {
   }: {
     width: number;
     height: number;
-    parent: THREE.Group;
+    parent: Group;
   }) {
     this.width = width;
     this.height = height;
     this.parent = parent;
-    this.timeline = GSAP.timeline();
+
     this.setMesh();
     this.modifyMaterial();
     this.setAnimation();
   }
 
   setMesh() {
-    this.mesh = new Reflector(new THREE.PlaneGeometry(1, 1), {
+    this.mesh = new Reflector(new PlaneGeometry(1, 1), {
       textureWidth: this.width,
       textureHeight: this.height,
       clipBias: 0.1,
-      encoding: THREE.sRGBEncoding,
+      encoding: sRGBEncoding,
       color: 0xffffff,
-    }) as unknown as THREE.Mesh<THREE.BufferGeometry, THREE.ShaderMaterial>;
+    }) as unknown as Mesh<BufferGeometry, ShaderMaterial>;
     this.mesh.renderOrder = -10000000000;
     this.parent.add(this.mesh);
   }
@@ -44,7 +53,7 @@ export default class Mirror {
   modifyMaterial() {
     this.mesh.material.transparent = true;
 
-    this.mesh.material.onBeforeCompile = (shader: THREE.Shader) => {
+    this.mesh.material.onBeforeCompile = (shader) => {
       shader.uniforms.uOpacity = { value: 1 };
       shader.fragmentShader = shader.fragmentShader.replace(
         "gl_FragColor = vec4( blendOverlay( base.rgb, color ), 1.0 );",
@@ -66,8 +75,8 @@ export default class Mirror {
     this.mesh.scale.set(2, 2, 2);
     this.mesh.position.y = -0.8196;
 
-    this.origin = new THREE.Vector3();
-    this.dummy = new THREE.Object3D();
+    this.origin = new Vector3();
+    this.dummy = new Object3D();
     this.progress = 0;
 
     this.timeline.to(this, {

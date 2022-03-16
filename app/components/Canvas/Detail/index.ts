@@ -13,8 +13,11 @@ import {
   Euler,
 } from "three";
 import GSAP from "gsap";
+// @ts-ignore
 import fragmentShaderDef from "../../../shaders/detail/fragmentDef.glsl";
+// @ts-ignore
 import vertexShader from "../../../shaders/detail/vertex.glsl";
+// @ts-ignore
 import fragmentShader from "../../../shaders/detail/fragment.glsl";
 import DetailDom from "./DetailDom";
 import Mirror from "./Mirror";
@@ -51,7 +54,7 @@ export default class Detail extends EventEmitter {
   imageElement: HTMLImageElement = document.querySelector(
     ".detail__explanation__media__image"
   )!;
-  detailElements: NodeListOf<HTMLDivElement> =
+  detailElements: NodeListOf<HTMLElement> =
     document.querySelectorAll(".detail");
   details: { [key: string]: DetailDom } = {};
   defaultMaterial: ShaderMaterial;
@@ -59,20 +62,11 @@ export default class Detail extends EventEmitter {
   materials: ShaderMaterial[] = [];
   mesh: Mesh;
   mirror: Mirror;
-  active: any;
-  sliceFigure: any;
-  textures: any;
-  textureArray: any;
-  material: any;
-  block: any;
-  wrapperOffset: number;
-  wrapperHeight: number;
+  active: DetailDom;
   scroll: number;
   previousScroll: number;
-  triggerHeights: number[];
-  medias: number;
-  isFullscreen: boolean;
-  isTransitioning: boolean;
+  isFullscreen = false;
+  isTransitioning = false;
   touchStart = new Vector2();
   touchStartTime: number;
   time: number;
@@ -80,15 +74,19 @@ export default class Detail extends EventEmitter {
   snippetRefElement = document.querySelector(".snippets__gallery")!;
   transitionStartPosition: number;
   transitionStartPositionDepth: number;
-  fullscreenTransitionDebounce;
-  constructor({ scene, template, camera }: any) {
+  constructor({
+    scene,
+    template,
+    camera,
+  }: {
+    scene: Scene;
+    template: string;
+    camera: PerspectiveCamera;
+  }) {
     super();
     this.scene = scene;
     this.template = template;
     this.camera = camera;
-
-    this.isFullscreen = false; //not used atm
-    this.isTransitioning = false; //not used atm
 
     this.setGeometry();
     this.setDetails();
@@ -97,11 +95,7 @@ export default class Detail extends EventEmitter {
     this.setMesh();
     Detection.isDesktop() && this.setMirror();
 
-    this.onResize({ width: this.width, height: this.height });
-
-    this.fullscreenTransitionDebounce = this.debounce(
-      this.fullscreenTransition
-    );
+    this.onResize();
   }
 
   fromSnippetsTransition(time: number) {
@@ -336,7 +330,7 @@ export default class Detail extends EventEmitter {
     }
   }
 
-  onResize({ width, height }: { width?: number; height?: number }) {
+  onResize() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     if (this.isFullscreen) {
@@ -448,16 +442,6 @@ export default class Detail extends EventEmitter {
     this.isFullscreen = !this.isFullscreen;
   }
 
-  debounce(func, timeout = 100) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(this, args);
-      }, timeout);
-    };
-  }
-
   updateRaycaster(coords: { x: number; y: number }) {
     this.raycaster.setFromCamera(coords, this.camera);
     const intersect = this.raycaster.intersectObject(this.mesh);
@@ -515,7 +499,6 @@ export default class Detail extends EventEmitter {
           }
         }
       } else {
-        console.log("DIFF: ", this.time - this.touchStartTime);
         if (this.time - this.touchStartTime < 0.11) {
           this.fullscreenTransition();
         }

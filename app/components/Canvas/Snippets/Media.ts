@@ -5,8 +5,9 @@ import {
   ShaderMaterial,
   Mesh,
 } from "three";
-
+// @ts-ignore
 import vertexShader from "../../../shaders/snippets/vertex.glsl";
+// @ts-ignore
 import fragmentShader from "../../../shaders/snippets/fragment.glsl";
 
 export default class Media {
@@ -24,7 +25,17 @@ export default class Media {
   lowerBound: number;
   displacementLeftTexture = window.TEXTURES.displ;
   displacementRightTexture = window.TEXTURES.displ2;
-  constructor({ element, geometry, position, scene }: any) {
+  constructor({
+    element,
+    geometry,
+    position,
+    scene,
+  }: {
+    element: HTMLElement;
+    geometry: PlaneGeometry;
+    position: number;
+    scene: Group;
+  }) {
     this.texture =
       window.TEXTURES[element.querySelector("img")!.getAttribute("data-src")!];
     this.snippetIndex = Number(element.getAttribute("data-index")!);
@@ -67,7 +78,19 @@ export default class Media {
     this.scene.add(this.mesh);
   }
 
-  onResize({ galleryWidth, upperBound, lowerBound, scale, unitSize }: any) {
+  onResize({
+    galleryWidth,
+    upperBound,
+    lowerBound,
+    scale,
+    unitSize,
+  }: {
+    galleryWidth: number;
+    upperBound: number;
+    lowerBound: number;
+    scale: number;
+    unitSize: number;
+  }) {
     this.extra = 0;
     this.galleryWidth = galleryWidth;
     this.upperBound = upperBound;
@@ -78,7 +101,7 @@ export default class Media {
     this.mesh.position.x = this.initialPosition;
   }
 
-  update({ scroll }: { scroll: number }) {
+  update(scroll: number) {
     this.mesh.position.x = this.initialPosition - scroll + this.extra;
     if (this.mesh.position.x > this.upperBound) {
       this.extra -= this.galleryWidth;

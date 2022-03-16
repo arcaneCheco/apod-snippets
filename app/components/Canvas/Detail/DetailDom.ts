@@ -1,16 +1,16 @@
 import Component from "../../../classes/Component";
-import { Texture } from "three";
+import { CompressedTexture } from "three";
 
 export default class DetailDom extends Component {
   index: number;
   height: number;
   width = window.innerWidth;
   scrollIndex = 0;
-  imagePositions: number[];
-  textures: Texture[];
+  imagePositions: number[] = [];
+  textures: CompressedTexture[] = [];
   count: number;
   triggerHeights: number[];
-  constructor({ element }: { element: HTMLDivElement }) {
+  constructor({ element }: { element: HTMLElement }) {
     super({
       element,
       elements: {
@@ -27,8 +27,8 @@ export default class DetailDom extends Component {
   }
 
   setTextures() {
-    this.textures = [...this.elements.images].map(
-      (img: HTMLImageElement) => window.TEXTURES[img.getAttribute("data-src")!]
+    this.elements.images.forEach((img) =>
+      this.textures.push(window.TEXTURES[img.getAttribute("data-src")!])
     );
     this.count = this.textures.length;
   }
@@ -42,7 +42,9 @@ export default class DetailDom extends Component {
   }
 
   setMeshPositions() {
-    this.imagePositions = [...this.elements.images].map((img) => {
+    this.imagePositions = Array.from(
+      this.elements.images as NodeListOf<HTMLElement>
+    ).map((img) => {
       const bounds = img.getBoundingClientRect();
       return bounds.left + bounds.width / 2 - this.width / 2;
     });
