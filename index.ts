@@ -96,4 +96,5 @@ app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
 });
 
-module.exports = app;
+// module.exports = app;
+export default app;
