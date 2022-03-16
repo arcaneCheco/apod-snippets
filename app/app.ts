@@ -16,11 +16,6 @@ import Footer from "./components/Footer";
 
 import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 
-// TODO
-// clean up typescript
-// clean out utils
-// DONE
-
 import Sound from "./components/Sound";
 import Detection from "./classes/Detection";
 
