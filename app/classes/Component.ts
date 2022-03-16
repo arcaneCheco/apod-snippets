@@ -1,46 +1,57 @@
 import EventEmitter from "events";
 
-interface Props {
-  element: any;
-  elements: any;
+// StrictUnion type from https://stackoverflow.com/questions/69218241/property-does-not-exist-on-type-union
+type UnionKeys<T> = T extends T ? keyof T : never;
+type StrictUnionHelper<T, TAll> = T extends any
+  ? T & Partial<Record<Exclude<UnionKeys<TAll>, keyof T>, never>>
+  : never;
+type StrictUnion<T> = StrictUnionHelper<T, T>;
+
+export type MainSelector = string | HTMLElement;
+export interface OtherSelectors {
+  [key: string]: MainSelector | NodeListOf<HTMLElement>;
+  wrapper: MainSelector | NodeListOf<HTMLElement>;
 }
 
+type SelectedChild = StrictUnion<HTMLElement | NodeListOf<HTMLElement>>;
+type SelectedChildren = Record<string, SelectedChild> & {
+  wrapper: HTMLElement;
+};
+
 export default class Component extends EventEmitter {
-  selector;
-  selectorChildren;
-  element: any;
-  elements: any;
-  constructor({ element, elements }: Props) {
+  element: HTMLElement;
+  elements: SelectedChildren;
+  constructor({
+    element,
+    elements,
+  }: {
+    element: MainSelector;
+    elements: OtherSelectors;
+  }) {
     super();
 
-    this.selector = element;
-    this.selectorChildren = { ...elements };
-
-    this.create();
+    this.create(element, elements);
   }
 
-  create() {
-    if (this.selector instanceof window.HTMLElement) {
-      this.element = this.selector;
-    } else {
-      this.element = document.querySelector(this.selector);
-    }
-    this.elements = {};
-    Object.entries(this.selectorChildren).forEach(([key, entry]: any) => {
-      if (
-        entry instanceof window.HTMLElement ||
-        entry instanceof window.NodeList ||
-        Array.isArray(entry)
-      ) {
-        this.elements[key] = entry;
-      } else {
-        this.elements[key] = this.element.querySelectorAll(entry);
+  create(mainSelector: MainSelector, otherSelectors: OtherSelectors) {
+    this.element =
+      typeof mainSelector === "string"
+        ? document.querySelector(mainSelector)
+        : mainSelector;
+
+    this.elements = {} as SelectedChildren;
+
+    Object.entries(otherSelectors).forEach(([key, selector]) => {
+      if (typeof selector === "string") {
+        this.elements[key] = this.element.querySelectorAll(selector);
 
         if (this.elements[key].length === 0) {
           this.elements[key] = null;
         } else if (this.elements[key].length === 1) {
-          this.elements[key] = this.element.querySelector(entry);
+          this.elements[key] = this.elements[key][0] as SelectedChild;
         }
+      } else {
+        this.elements[key] = selector as SelectedChild;
       }
     });
   }

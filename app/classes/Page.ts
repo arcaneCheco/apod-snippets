@@ -1,29 +1,12 @@
-import EventEmitter from "events";
+import Component, { MainSelector, OtherSelectors } from "./Component";
 import { clamp, lerp } from "three/src/math/MathUtils";
-
-// StrictUnion type from https://stackoverflow.com/questions/69218241/property-does-not-exist-on-type-union
-type UnionKeys<T> = T extends T ? keyof T : never;
-type StrictUnionHelper<T, TAll> = T extends any
-  ? T & Partial<Record<Exclude<UnionKeys<TAll>, keyof T>, never>>
-  : never;
-type StrictUnion<T> = StrictUnionHelper<T, T>;
-
 interface Classes {
   [key: string]: string;
   active: string;
 }
-type MainSelector = string | HTMLElement;
-interface OtherSelectors {
-  [key: string]: MainSelector | NodeListOf<HTMLElement>;
-  wrapper: MainSelector | NodeListOf<HTMLElement>;
-}
-type PageElement = StrictUnion<HTMLElement | NodeListOf<HTMLElement>>;
-type PageElementRecord = Record<string, PageElement> & { wrapper: HTMLElement };
 
-export default class Page extends EventEmitter {
+export default class Page extends Component {
   classes: Classes;
-  element: HTMLElement;
-  elements: PageElementRecord;
   isScrollable: boolean;
   scroll = {
     ease: 0.07,
@@ -35,48 +18,23 @@ export default class Page extends EventEmitter {
     touchPosition: 0,
   };
   constructor({
-    classes,
     element,
     elements,
+    classes,
     isScrollable = true,
   }: {
-    classes: Classes;
     element: MainSelector;
     elements: OtherSelectors;
+    classes: Classes;
     isScrollable?: boolean;
   }) {
-    super();
+    super({ element, elements });
 
     this.classes = {
       ...classes,
     };
 
     this.isScrollable = isScrollable;
-
-    this.create(element, elements);
-  }
-
-  create(mainSelector: MainSelector, otherSelectors: OtherSelectors) {
-    this.element =
-      typeof mainSelector === "string"
-        ? document.querySelector(mainSelector)
-        : mainSelector;
-
-    this.elements = {} as PageElementRecord;
-
-    Object.entries(otherSelectors).forEach(([key, selector]) => {
-      if (typeof selector === "string") {
-        this.elements[key] = this.element.querySelectorAll(selector);
-
-        if (this.elements[key].length === 0) {
-          this.elements[key] = null;
-        } else if (this.elements[key].length === 1) {
-          this.elements[key] = this.elements[key][0] as PageElement;
-        }
-      } else {
-        this.elements[key] = selector as PageElement;
-      }
-    });
   }
 
   show() {}

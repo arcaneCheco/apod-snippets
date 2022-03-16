@@ -22,15 +22,13 @@ export default class Sound {
     this.isDisabled = true;
   }
 
-  onVisibilityChange(event: any) {
+  onVisibilityChange() {
     if (this.isDisabled) return;
     if (document.hidden) {
       this.medias["backtrack"].pause();
     } else {
       this.medias["backtrack"].play();
     }
-    console.log(document.hidden);
-    console.log(event);
   }
 
   onChange({ from, to }: { from: string; to: string }) {
