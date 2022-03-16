@@ -13,6 +13,7 @@ import Preloader from "./components/Preloader";
 import Icon from "./components/Icon";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
+import { StrictUnion } from "./classes/Component";
 
 // @ts-ignore
 import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
@@ -20,10 +21,7 @@ import { defineElement as defineBentoFitText } from "@bentoproject/fit-text";
 import Sound from "./components/Sound";
 import Detection from "./classes/Detection";
 
-// TODO
-// change touchevent types
-// use more sensible values for render order
-// bring background closer to camera
+type MouseTouchEvent = StrictUnion<MouseEvent | TouchEvent>;
 
 class App {
   template: string;
@@ -240,7 +238,7 @@ class App {
     this.page.isScrollable && this.page.onWheel(pixelY);
   }
 
-  onTouchDown(event: any) {
+  onTouchDown(event: MouseTouchEvent) {
     if (this.navigation.isOpen) return;
 
     this.isDown = true;
@@ -258,7 +256,7 @@ class App {
     this.page.onTouchDown(y);
   }
 
-  onTouchMove(event: any) {
+  onTouchMove(event: MouseTouchEvent) {
     if (this.navigation.isOpen) return;
 
     let x: number, y: number;
@@ -276,7 +274,7 @@ class App {
     this.isDown && this.page.isScrollable && this.page.onTouchMove(y);
   }
 
-  onTouchUp(event: any) {
+  onTouchUp(event: MouseTouchEvent) {
     if (this.navigation.isOpen) return;
     this.isDown = false;
 
