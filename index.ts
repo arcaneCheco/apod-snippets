@@ -24,8 +24,6 @@ const initApi = (req: Request) => {
 const handleRequest = async (api: ResolvedApi) => {
   const meta = await api.getSingle("meta");
 
-  console.log(meta.data);
-
   const home = await api.getSingle("home");
 
   const snippets = await api.getSingle("snippets", { fetchLinks: "pod.index" });
