@@ -1,71 +1,80 @@
 import EventEmitter from "events";
 import { clamp, lerp } from "three/src/math/MathUtils";
 
-interface Props {
-  classes: any;
-  element: any;
-  elements: any;
-  isScrollable?: boolean;
+// StrictUnion type from https://stackoverflow.com/questions/69218241/property-does-not-exist-on-type-union
+type UnionKeys<T> = T extends T ? keyof T : never;
+type StrictUnionHelper<T, TAll> = T extends any
+  ? T & Partial<Record<Exclude<UnionKeys<TAll>, keyof T>, never>>
+  : never;
+type StrictUnion<T> = StrictUnionHelper<T, T>;
+
+interface Classes {
+  [key: string]: string;
+  active: string;
 }
+type MainSelector = string | HTMLElement;
+interface OtherSelectors {
+  [key: string]: MainSelector | NodeListOf<HTMLElement>;
+  wrapper: MainSelector | NodeListOf<HTMLElement>;
+}
+type PageElement = StrictUnion<HTMLElement | NodeListOf<HTMLElement>>;
+type PageElementRecord = Record<string, PageElement> & { wrapper: HTMLElement };
 
 export default class Page extends EventEmitter {
-  classes;
-  selectors;
-  isScrollable;
-  element: any;
-  elements: any;
-  scroll;
-  // isDown = false;
-  constructor({ classes, element, elements, isScrollable = true }: Props) {
+  classes: Classes;
+  element: HTMLElement;
+  elements: PageElementRecord;
+  isScrollable: boolean;
+  scroll = {
+    ease: 0.07,
+    position: 0,
+    current: 0,
+    target: 0,
+    limit: 5000,
+    last: 0,
+    touchPosition: 0,
+  };
+  constructor({
+    classes,
+    element,
+    elements,
+    isScrollable = true,
+  }: {
+    classes: Classes;
+    element: MainSelector;
+    elements: OtherSelectors;
+    isScrollable?: boolean;
+  }) {
     super();
 
     this.classes = {
       ...classes,
     };
 
-    this.selectors = {
-      element,
-      elements: {
-        ...elements,
-      },
-    };
-
-    this.scroll = {
-      ease: 0.07,
-      position: 0,
-      current: 0,
-      target: 0,
-      limit: 5000,
-      last: 0,
-      touchPosition: 0,
-    };
-
     this.isScrollable = isScrollable;
 
-    this.create();
+    this.create(element, elements);
   }
 
-  create() {
-    this.element = document.querySelector(this.selectors.element);
+  create(mainSelector: MainSelector, otherSelectors: OtherSelectors) {
+    this.element =
+      typeof mainSelector === "string"
+        ? document.querySelector(mainSelector)
+        : mainSelector;
 
-    this.elements = {};
+    this.elements = {} as PageElementRecord;
 
-    Object.entries(this.selectors.elements).forEach(([key, selector]) => {
-      if (
-        selector instanceof window.HTMLElement ||
-        selector instanceof window.NodeList
-      ) {
-        this.elements[key] = selector;
-      } else if (Array.isArray(selector)) {
-        this.elements[key] = selector;
-      } else {
+    Object.entries(otherSelectors).forEach(([key, selector]) => {
+      if (typeof selector === "string") {
         this.elements[key] = this.element.querySelectorAll(selector);
 
         if (this.elements[key].length === 0) {
           this.elements[key] = null;
         } else if (this.elements[key].length === 1) {
-          this.elements[key] = this.element.querySelector(selector);
+          this.elements[key] = this.elements[key][0] as PageElement;
         }
+      } else {
+        this.elements[key] = selector as PageElement;
       }
     });
   }

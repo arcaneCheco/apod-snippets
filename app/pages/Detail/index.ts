@@ -18,11 +18,8 @@ export default class Detail extends Page {
       },
     });
 
-    this.addEventListeners();
     this.createObserver();
   }
-
-  // setData(id:string) {}
 
   show() {
     GSAP.fromTo(
@@ -58,9 +55,7 @@ export default class Detail extends Page {
       { threshold: 0 }
     );
 
-    this.elements.textBox.forEach((el: HTMLDivElement) =>
-      this.observer.observe(el)
-    );
+    this.elements.textBox.forEach((el) => this.observer.observe(el));
   }
 
   onEnterFullscreen() {
@@ -78,7 +73,7 @@ export default class Detail extends Page {
       ease: "power2.out",
     });
 
-    this.elements.textBox.forEach((target: HTMLDivElement, index: number) => {
+    this.elements.textBox.forEach((target, index) => {
       GSAP.to(target, {
         translateX: index % 2 === 1 ? "-200%" : "200%",
         duration: 1,
@@ -102,7 +97,7 @@ export default class Detail extends Page {
       ease: "power2.out",
     });
 
-    this.elements.textBox.forEach((target: HTMLDivElement) => {
+    this.elements.textBox.forEach((target) => {
       GSAP.to(target, {
         translateX: 0,
         duration: 1,
@@ -114,11 +109,9 @@ export default class Detail extends Page {
   update(): void {
     super.update();
     if (this.scroll.current < window.innerHeight * 0.7) {
-      this.elements.closeButton.style.opacity = 1;
+      this.elements.closeButton.style.opacity = "1";
     } else {
-      this.elements.closeButton.style.opacity = 0.4;
+      this.elements.closeButton.style.opacity = "0.4";
     }
   }
-
-  addEventListeners(): void {}
 }

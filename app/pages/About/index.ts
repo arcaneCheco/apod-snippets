@@ -15,7 +15,7 @@ export default class About extends Page {
         credits: ".credits",
         toggleText: ".credits__toggle__text",
         link: ".about__link",
-        pod: document.querySelector(".about__credits__podname"),
+        pod: document.querySelector<HTMLElement>(".about__credits__podname"),
       },
       isScrollable: true,
     });
