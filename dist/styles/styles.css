@@ -296,7 +296,6 @@ html {
   width: 100%;
 }
 .preloader__title__text::before, .preloader__title__text::after {
-  content: attr(data-text);
   color: white;
   filter: blur(0.02em);
   position: absolute;
@@ -307,6 +306,15 @@ html {
 .preloader__title__text::after {
   transform: translateX(-100%);
   mix-blend-mode: difference;
+}
+
+.title1::before, .title1::after {
+  content: attr(data-text);
+}
+
+.title2::before, .title2::after {
+  counter-reset: percent var(--percent);
+  content: counter(percent) "%";
 }
 
 .gradient,

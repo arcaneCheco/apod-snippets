@@ -50,12 +50,12 @@ export default class Preloader extends Component {
 
   onAssetLoaded(progress: number, image: string) {
     this.elements.assetName.innerText = image;
-    GSAP.set(this.elements.progress, {
-      attr: {
-        "data-text": `${Math.round(100 * progress)}%`,
-      },
-      innerText: `${Math.round(100 * progress)}%`,
-    });
+
+    const percent = Math.round(100 * progress);
+
+    this.elements.progress.innerText = `${percent}%`;
+
+    document.documentElement.style.setProperty("--percent", String(percent));
   }
 
   onAllAssetsLoaded() {

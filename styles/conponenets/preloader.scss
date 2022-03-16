@@ -83,7 +83,9 @@
 
   &::before,
   &::after {
-    content: attr(data-text);
+    // content: attr(data-text);
+    // counter-reset: percent var(--percent);
+    // content: counter(percent) "%";
     color: white;
     filter: blur(0.02em);
     position: absolute;
@@ -94,6 +96,20 @@
   &::after {
     transform: translateX(-100%);
     mix-blend-mode: difference;
+  }
+}
+
+.title1 {
+  &::before,
+  &::after {
+    content: attr(data-text);
+  }
+}
+.title2 {
+  &::before,
+  &::after {
+    counter-reset: percent var(--percent);
+    content: counter(percent) "%";
   }
 }
 

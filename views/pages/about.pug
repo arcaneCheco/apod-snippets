@@ -15,12 +15,12 @@
             li.about__credits__podname=pod.primary.title
               ul.about__credits__pod__data 
                 li.about__credits__pod__original
-                  a(href=pod.primary.originalentry.url)="original entry"
+                  a(href=pod.primary.originalentry.url target="_blank")="original entry"
                 li.about__credits__pod__images=pod.primary.imagesheader
                   ul.about__credits__pod__imagelist 
                     each item in pod.items 
                       li.about__credits__pod__image__item
-                        a(href=item.image.url)=item.artist
+                        a(href=item.image.url target="_blank")=item.artist
             //- .about__section__break
             //-   svg.about__section__break__svg(viewBox="0 0 10 10" fill="none" preserveAspectRatio="none")
             //-     line(x1="0" y1="5" x2="10" y2="5" stroke="white")

@@ -36386,12 +36386,9 @@ class $cdf592673956a290$export$2e2bcd8739ae039 extends $ea0b881b56c5595f$export$
     }
     onAssetLoaded(progress, image) {
         this.elements.assetName.innerText = image;
-        $980dae104ebd016a$export$99ee26438460406a.set(this.elements.progress, {
-            attr: {
-                "data-text": `${Math.round(100 * progress)}%`
-            },
-            innerText: `${Math.round(100 * progress)}%`
-        });
+        const percent = Math.round(100 * progress);
+        this.elements.progress.innerText = `${percent}%`;
+        document.documentElement.style.setProperty("--percent", String(percent));
     }
     onAllAssetsLoaded() {
         $980dae104ebd016a$export$99ee26438460406a.to(this.elements.notificationText, {
