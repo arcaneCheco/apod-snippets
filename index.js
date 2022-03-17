@@ -1,16 +1,9 @@
-import express, { Request } from "express";
-import dotenv from "dotenv";
-import Prismic from "@prismicio/client";
-import ResolvedApi from "@prismicio/client/types/ResolvedApi";
-import PrismicDOM from "prismic-dom";
-import UAParser from "ua-parser-js";
-// const express = require("express");
-// require("dotenv").config();
-// const Prismic = require("@prismicio/client");
-// const PrismicDOM = require("prismic-dom");
-// const UAParser = require("ua-parser-js");
+const express = require("express");
+require("dotenv").config();
+const Prismic = require("@prismicio/client");
+const PrismicDOM = require("prismic-dom");
+const UAParser = require("ua-parser-js");
 
-dotenv.config();
 const app = express();
 const PORT = 3000;
 
@@ -19,16 +12,14 @@ app.use(express.static(`${__dirname}/dist`));
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
 
-const initApi = (req: Request) => {
-  // const initApi = (req: any) => {
-  return Prismic.getApi(process.env.PRISMIC_ENDPOINT!, {
+const initApi = (req) => {
+  return Prismic.getApi(process.env.PRISMIC_ENDPOINT, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
     req,
   });
 };
 
-const handleRequest = async (api: ResolvedApi) => {
-  // const handleRequest = async (api: any) => {
+const handleRequest = async (api) => {
   const meta = await api.getSingle("meta");
 
   const home = await api.getSingle("home");
@@ -43,27 +34,27 @@ const handleRequest = async (api: ResolvedApi) => {
 
   const additionalAssets = await api.getSingle("additional_assets");
 
-  const textures: { [key: string]: string } = {};
-  const sounds: { [key: string]: string } = {};
+  const textures = {};
+  const sounds = {};
 
-  snippets.data.snippets.forEach((snippet: any) => {
+  snippets.data.snippets.forEach((snippet) => {
     snippet.media.name = snippet.media.name.split(".")[0];
     textures[snippet.media.name] = snippet.media.url;
   });
 
-  pods.forEach((pod: any) => {
-    pod.data.images.forEach((image: any) => {
+  pods.forEach((pod) => {
+    pod.data.images.forEach((image) => {
       image.media.name = image.media.name.split(".")[0];
       textures[image.media.name] = image.media.url;
     });
   });
 
-  additionalAssets.data.textures.forEach((image: any) => {
+  additionalAssets.data.textures.forEach((image) => {
     image.media.name = image.media.name.split(".")[0];
     textures[image.media.name] = image.media.url;
   });
 
-  additionalAssets.data.sounds.forEach((sound: any) => {
+  additionalAssets.data.sounds.forEach((sound) => {
     sound.media.name = sound.media.name.split(".")[0];
     sounds[sound.media.name] = sound.media.url;
   });
@@ -79,8 +70,7 @@ const handleRequest = async (api: ResolvedApi) => {
   };
 };
 
-// app.use((req, res, next) => {
-app.use((req: any, res: any, next: any) => {
+app.use((req, res, next) => {
   const ua = UAParser(req.headers["user-agent"]);
 
   res.locals.isDesktop = ua.device.type === undefined;
@@ -92,17 +82,13 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 
-// app.get(["/", "/about", "/snippets", "/detail/:uid"], async (req, res) => {
-app.get(
-  ["/", "/about", "/snippets", "/detail/:uid"],
-  async (req: any, res: any) => {
-    const api = await initApi(req);
-    const defaults = await handleRequest(api);
-    res.render("views", {
-      ...defaults,
-    });
-  }
-);
+app.get(["/", "/about", "/snippets", "/detail/:uid"], async (req, res) => {
+  const api = await initApi(req);
+  const defaults = await handleRequest(api);
+  res.render("views", {
+    ...defaults,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Listening at http://localhost:${PORT}`);
