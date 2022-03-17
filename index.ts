@@ -1,16 +1,16 @@
-// import express, { Request } from "express";
-// import dotenv from "dotenv";
-// import Prismic from "@prismicio/client";
-// import ResolvedApi from "@prismicio/client/types/ResolvedApi";
-// import PrismicDOM from "prismic-dom";
-// import UAParser from "ua-parser-js";
-const express = require("express");
-require("dotenv").config();
-const Prismic = require("@prismicio/client");
-const PrismicDOM = require("prismic-dom");
-const UAParser = require("ua-parser-js");
+import express, { Request } from "express";
+import dotenv from "dotenv";
+import Prismic from "@prismicio/client";
+import ResolvedApi from "@prismicio/client/types/ResolvedApi";
+import PrismicDOM from "prismic-dom";
+import UAParser from "ua-parser-js";
+// const express = require("express");
+// require("dotenv").config();
+// const Prismic = require("@prismicio/client");
+// const PrismicDOM = require("prismic-dom");
+// const UAParser = require("ua-parser-js");
 
-// dotenv.config();
+dotenv.config();
 const app = express();
 const PORT = 3000;
 
@@ -19,16 +19,16 @@ app.use(express.static(`${__dirname}/dist`));
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
 
-// const initApi = (req: Request) => {
-const initApi = (req: any) => {
+const initApi = (req: Request) => {
+  // const initApi = (req: any) => {
   return Prismic.getApi(process.env.PRISMIC_ENDPOINT!, {
     accessToken: process.env.PRISMIC_ACCESS_TOKEN,
     req,
   });
 };
 
-// const handleRequest = async (api: ResolvedApi) => {
-const handleRequest = async (api: any) => {
+const handleRequest = async (api: ResolvedApi) => {
+  // const handleRequest = async (api: any) => {
   const meta = await api.getSingle("meta");
 
   const home = await api.getSingle("home");
